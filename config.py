@@ -1,0 +1,4 @@
+# constants
+
+CANVAS_WIDTH = 900
+CANVAS_HEIGHT = 900
