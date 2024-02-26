@@ -86,13 +86,3 @@ class Wave(Level):
 
     def status(self):
         return self.current_wave
-
-
-# level = Level()
-# while level.current_level <= level.final_level:
-#     print(f'Level {level.current_level}:')
-#     num_zombies = level.get_num_zombies()
-#     print(f'Number of zombies: {num_zombies}')
-#     velocity_range = level.get_velocity_range(num_zombies)
-#     print(f'Velocity range: {velocity_range}')
-#     level.next_level()

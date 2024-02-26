@@ -1,4 +1,4 @@
-import SimpleGUICS2Pygame.simpleguics2pygame as sg
+from assets import ZOMBIE_IMG
 from user_input import *
 from config import *
 
@@ -8,11 +8,11 @@ class Zombie:
         self.velocity = velocity
         self.x = x
         self.y = y
+
         self.health = health
         self.max_health = health
-        self.image = sg.load_image(
-            'https://img.itch.zone/aW1nLzE0Mzk3ODY5LnBuZw==/original/6J9fF%2F.png'
-        )
+
+        self.image = ZOMBIE_IMG
 
     def draw(self, canvas):
         canvas.draw_image(
@@ -20,7 +20,7 @@ class Zombie:
             (self.image.get_width() / 2, self.image.get_height() / 2),
             (self.image.get_width(), self.image.get_height()),
             (self.x, self.y),
-            (80, 80),
+            (50, 50),
         )
 
     def update(self):
@@ -28,3 +28,18 @@ class Zombie:
 
     def move_down(self):
         self.y += self.velocity
+
+    def get_height(self):
+        return self.image.get_height()
+
+    def get_health(self):
+        return self.health
+
+    def get_max_health(self):
+        return self.max_health
+
+    def lose_health(self, damage):
+        self.health -= damage
+
+    def has_hit_floor(self):
+        return self.y - 50 >= CANVAS_HEIGHT
