@@ -1,7 +1,7 @@
 from player import Player
 from bullet import Bullet
-from zombies import Zombie
-from mouse import Mouse
+# from zombies import Zombie
+# from mouse import Mouse
 from user_input import Keyboard
 
 
@@ -12,7 +12,7 @@ class Shoot:
         self.cooldown_counter = 0
         self.cooldown = 30
 
-    def fire_rate(self):
+    def fire_rate_iterator(self):
         if self.cooldown_counter >= self.cooldown:
             self.cooldown_counter = 0
         elif self.cooldown_counter > 0:

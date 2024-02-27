@@ -28,8 +28,8 @@ class Bullet:
         )
 
     def update(self):
-        clicked_x = Mouse.clicked_x
-        clicked_y = Mouse.clicked_y
+        clicked_x = Mouse.position[0]
+        clicked_y = Mouse.position[1]
         self.move_towards(clicked_x, clicked_y)
 
     def move_towards(self, x, y):

@@ -44,7 +44,8 @@ class Level:
 
         if self.current_level % 10 == 0:
             Wave().trigger()
-        if self.current_level > self.final_level:
+
+        if self.current_level >= self.final_level:
             self.last_level_reached()
 
     def last_level_reached(self):
