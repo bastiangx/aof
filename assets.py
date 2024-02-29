@@ -26,6 +26,11 @@ ZOMBIE_IMG = sg.load_image(
 
 # Background stuff
 
+# Barn / farm / base stuff 
+# BARN_IMG = sg.load_image(
+#     'https://img.itch.zone/aW1nLzE0Mzk3ODY5LnBuZw==/original/6J9fF%2F.png'
+# )
+
 # Sound stuff
 
 ## hello from imran / test for git // delete later
