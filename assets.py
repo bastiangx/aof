@@ -1,7 +1,7 @@
 import SimpleGUICS2Pygame.simpleguics2pygame as sg
 
-# from os.path import join as pj
-# from os import getcwd
+from os.path import join as pj
+from os import getcwd
 
 # Pathfinder
 IMAGE_PATH = 'assets/images'
