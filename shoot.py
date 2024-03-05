@@ -1,45 +1,32 @@
-from player import Player
 from bullet import Bullet
-# from zombies import Zombie
-# from mouse import Mouse
-from user_input import Keyboard
+from player import Player
+from vector import Vector  # Assuming this is the Vector class you provided
 
 
 class Shoot:
     def __init__(self):
-        self.bullets = []
-        self.bullets_to_remove = []
         self.cooldown_counter = 0
-        self.cooldown = 30
+        self.cooldown = 70
 
+    # limits the rate of fire - shoot spam
     def fire_rate_iterator(self):
         if self.cooldown_counter >= self.cooldown:
             self.cooldown_counter = 0
         elif self.cooldown_counter > 0:
             self.cooldown_counter += 1
 
-    def shoot(self):
-        if self.cooldown_counter == 0 and Keyboard.leader:
-            self.bullets.append(Bullet(Player.x, Player.y))
-            self.cooldown_counter = 1
+        return self.cooldown_counter
 
-    def draw(self, canvas):
-        for bullet in self.bullets:
-            bullet.draw(canvas)
+    # set aim to velocity, reset cooldown
+    def start_shooting(self, bullet, player_pos, mouse_pos):
+        aim_direction = self.aim(player_pos, mouse_pos)
+        bullet.velocity = aim_direction * bullet.velocity_modifier
 
-    def update(self):
-        for bullet in self.bullets:
-            bullet.update()
-            if bullet.off_screen():
-                self.bullets_to_remove.append(bullet)
+        self.cooldown_counter = 1
 
-        for bullet in self.bullets_to_remove:
-            self.bullets.remove(bullet)
-
-    def damage_zombies(self, zombies):
-        for bullet in self.bullets:
-            for zombie in zombies:
-                if bullet.is_collided(zombie):
-                    bullet_index = self.bullets.index(bullet)
-                    self.bullets.pop(bullet_index)
-                    zombie.lose_health(Bullet.damage)
+    # calculates the direction to shoot based on player and mouse pos
+    def aim(self, player_pos, mouse_pos):
+        aim_direction = Vector(
+            mouse_pos[0] - player_pos[0], mouse_pos[1] - player_pos[1]
+        )
+        return aim_direction.normalize()
