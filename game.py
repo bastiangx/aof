@@ -6,10 +6,26 @@ from player import Player
 from levels import Level
 from config import *
 
+# new imports
+from mouse import Mouse
+from bullet import Bullet
+from shoot import Shoot
+# end of new imports
+
 player = Player()
 level = Level()
 kbd = Keyboard()
-zombies = []
+zombies_list = []
+
+# new instances
+bullet = Bullet(x=player.x, y=player.y)
+shoot = Shoot()
+mouse = Mouse()
+
+# new lists
+bullets_list = []
+bullets_to_remove_list = []
+# end of new instances and lists
 
 
 def get_zombie_velocity(velocity_range):
@@ -30,37 +46,65 @@ def create_zombies(num_zombies, CANVAS_WIDTH):
         y = ru(50, 60) * -1
         zombie_velocity = get_zombie_velocity(velocity_range)
         zombie = Zombie(x, y, zombie_velocity, health=100)
-        zombies.append(zombie)
+        zombies_list.append(zombie)
 
 
 def floor_is_hit():
-    for zombie in zombies:
+    for zombie in zombies_list:
         if zombie.has_hit_floor():
             player.lose_floor_health()
 
 
 def remove_zombies():
     zombies_to_remove = [
-        zombie for zombie in zombies if zombie.has_hit_floor()
+        zombie for zombie in zombies_list if zombie.has_hit_floor()
     ]
-
     for zombie in zombies_to_remove:
-        zombies.remove(zombie)
+        zombies_list.remove(zombie)
+
+
+# new implementation
+# remove bullets that are off screen
+def remove_bullets():
+    bullets_to_remove = [
+        bullet for bullet in bullets_list if bullet.off_screen()
+    ]
+    for bullet in bullets_to_remove:
+        bullets_list.remove(bullet)
 
 
 # next level implementation
 def check_next_level():
-    if len(zombies) == 0:
+    if len(zombies_list) == 0:
         level.next_level()
         num_zombies = level.get_num_zombies()
         create_zombies(num_zombies, CANVAS_WIDTH)
 
 
 def draw(canvas):
-    for zombie in zombies:
+    # new implementation
+    # mouse stuff
+    if mouse.clicked and shoot.fire_rate_iterator() == 0:
+        bullet = Bullet(x=player.x, y=player.y)
+        bullets_list.append(bullet)
+
+        shoot.start_shooting(
+            bullet, [player.x, player.y], mouse.get_position()
+        )
+
+        mouse.clicked = False
+
+    # draw bullets
+    for bullet in bullets_list:
+        bullet.draw(canvas)
+        bullet.update()
+
+    for zombie in zombies_list:
         zombie.draw(canvas)
         zombie.update()
 
+    shoot.fire_rate_iterator()
+    remove_bullets()
     floor_is_hit()
     remove_zombies()
     player.draw(canvas)
@@ -73,5 +117,6 @@ frame.set_draw_handler(draw)
 
 frame.set_keydown_handler(kbd.keydown)
 frame.set_keyup_handler(kbd.keyup)
+frame.set_mouseclick_handler(mouse.click_handler)
 
 frame.start()
