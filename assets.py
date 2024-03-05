@@ -1,7 +1,7 @@
 import SimpleGUICS2Pygame.simpleguics2pygame as sg
 
-from os.path import join as pj
-from os import getcwd
+# from os.path import join as pj
+# from os import getcwd
 
 # Pathfinder
 IMAGE_PATH = 'assets/images'
@@ -11,9 +11,7 @@ AUDIO_PATH = 'assets/audio'
 FONT_PATH = 'assets/fonts'
 
 # Bullet stuff
-BULLET_IMG = sg.load_image(
-    'https://www.reddit.com/r/Terraria/comments/l44sl2/decided_to_resprite_some_of_the_bullets_crafted/'
-)
+BULLET_IMG = sg.load_image('https://www.filterforge.com/filters/12594-v5.jpg')
 
 
 # Player stuff
@@ -26,12 +24,7 @@ ZOMBIE_IMG = sg.load_image(
 
 # Background stuff
 
-# Barn / farm / base stuff 
-# BARN_IMG = sg.load_image(
-#     'https://img.itch.zone/aW1nLzE0Mzk3ODY5LnBuZw==/original/6J9fF%2F.png'
-# )
-
+# Barn / farm / base stuff
 # Sound stuff
 
-## hello from imran / test for git // delete later
 # GUI stuff
