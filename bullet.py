@@ -1,21 +1,17 @@
 from assets import BULLET_IMG
 from vector import Vector
-from mouse import Mouse
 from config import *
 
-
+# draws bullets, updates their position, and checks for collisions
 class Bullet:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+        self.velocity = Vector(1, 1)
+        self.velocity_modifier = 8
+        self.velocity.normalize() 
 
         self.image = BULLET_IMG
-
-        self.velocity = Vector(1, 1)
-        self.velocity.normalize()
-        self.velocity_modifier = 3
-        self.velocity *= self.velocity_modifier
-
         self.damage = 10
 
     def draw(self, canvas):
@@ -27,23 +23,12 @@ class Bullet:
             (10, 10),
         )
 
+    # moves bullet
     def update(self):
-        clicked_x = Mouse.position[0]
-        clicked_y = Mouse.position[1]
-        self.move_towards(clicked_x, clicked_y)
+        self.x += self.velocity.x
+        self.y += self.velocity.y
 
-    def move_towards(self, x, y):
-        target_vector = Vector(  # from current position to target
-            x - self.x, y - self.y
-        )
-        target_vector.normalize()
-
-        self.velocity.x = target_vector.x   # point towards target
-        self.velocity.y = target_vector.y
-
-        self.x += self.velocity.x * self.velocity.length()
-        self.y += self.velocity.y * self.velocity.length()
-
+    # detect bullet if off screen
     def off_screen(self):
         return (
             self.y <= 0
@@ -52,10 +37,11 @@ class Bullet:
             or self.x >= CANVAS_WIDTH
         )
 
-    def is_collided(self, zombie):
+    # check if bullet has collided with zombie / +3 creates a useful hitbox
+    def is_collided(self, zombies):
         return (
-            self.x + 5 > zombie.x
-            and self.x - 5 < zombie.x
-            and self.y + 5 > zombie.y
-            and self.y - 5 < zombie.y
+            self.x + 3 > zombies.x
+            and self.x - 3 < zombies.x
+            and self.y + 3 > zombies.y
+            and self.y - 3 < zombies.y
         )
