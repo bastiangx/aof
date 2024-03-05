@@ -1,18 +1,16 @@
 class Mouse:
     def __init__(self):
-        self.x = 0
-        self.y = 0
-        self.position = (self.x, self.y)
+        self.last_position = [0, 0]
         self.clicked = False
 
-    def click_handler(self, sg_position):
-        self.x = sg_position[0]
-        self.y = sg_position[1]
+    def click_handler(self, pos):
+        self.last_position = pos
         self.clicked = True
 
-    def get_position(self, position):
-        return position
+    def get_position(self):
+        return self.last_position
 
+    # reset click state to stop spam
     def update(self):
         if self.clicked:
             self.clicked = False
