@@ -1,4 +1,5 @@
 import SimpleGUICS2Pygame.simpleguics2pygame as sg
+from assets import PLAYER_IMG
 from vector import Vector
 from user_input import *
 from config import *
@@ -14,10 +15,7 @@ class Player:
         self.x = CANVAS_WIDTH / 2
         self.y = CANVAS_HEIGHT / 1.1
 
-        self.image = sg.load_image(
-            'https://img.itch.zone/aW1nLzE0Mzk3ODY5LnBuZw==/original/6J9fF%2F.png'
-        )
-
+        self.image = PLAYER_IMG
         self.health = health
         self.max_health = 100
 
