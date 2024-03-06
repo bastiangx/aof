@@ -8,6 +8,8 @@ Py simplegui shooter game inspired by space invaders. [Royal Holloway university
 
 <details>
 <summary> How to Run the game file? </summary>
+
+  
 ## Running the game
 
 To run the game, you need to have python installed on your machine. You can download python from [here](https://www.python.org/downloads/). Once you have python installed, you can run the game by running the following command in the terminal.
