@@ -9,9 +9,12 @@ class Bullet:
         self.y = y
         self.velocity = Vector(1, 1)
         self.velocity_modifier = 8
-        self.velocity.normalize() 
+        self.velocity.normalize()
 
         self.image = BULLET_IMG
+        self.width = 20
+        self.height = 20
+
         self.damage = 10
 
     def draw(self, canvas):
@@ -20,7 +23,19 @@ class Bullet:
             (self.image.get_width() / 2, self.image.get_height() / 2),
             (self.image.get_width(), self.image.get_height()),
             (self.x, self.y),
-            (10, 10),
+            (self.width, self.height),
+        )
+
+    def draw_test_hitbox(self, top_left, canvas):
+        canvas.draw_polygon(
+            [
+                (top_left[0], top_left[1]),
+                (top_left[0] + self.width, top_left[1]),
+                (top_left[0] + self.width, top_left[1] + self.height),
+                (top_left[0], top_left[1] + self.height),
+            ],
+            1,
+            'orange',
         )
 
     # moves bullet
@@ -37,11 +52,8 @@ class Bullet:
             or self.x >= CANVAS_WIDTH
         )
 
-    # check if bullet has collided with zombie / +3 creates a useful hitbox
-    def is_collided(self, zombies):
-        return (
-            self.x + 3 > zombies.x
-            and self.x - 3 < zombies.x
-            and self.y + 3 > zombies.y
-            and self.y - 3 < zombies.y
-        )
+    def get_hitbox(self):
+        return (self.x, self.y, self.width, self.height)
+
+    def get_top_left(self):
+        return (self.x - self.width / 2, self.y - self.height / 2)

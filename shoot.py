@@ -6,7 +6,7 @@ from vector import Vector  # Assuming this is the Vector class you provided
 class Shoot:
     def __init__(self):
         self.cooldown_counter = 0
-        self.cooldown = 70
+        self.cooldown = 30
 
     # limits the rate of fire - shoot spam
     def fire_rate_iterator(self):

@@ -1,5 +1,6 @@
 import SimpleGUICS2Pygame.simpleguics2pygame as sg
 from vector import Vector
+from assets import PLAYER_IMG
 from user_input import *
 from config import *
 
@@ -11,12 +12,12 @@ class Player:
         self.velocity_modifier = 5
         self.velocity *= self.velocity_modifier
 
+        self.image = PLAYER_IMG
+
         self.x = CANVAS_WIDTH / 2
         self.y = CANVAS_HEIGHT / 1.1
-
-        self.image = sg.load_image(
-            'https://img.itch.zone/aW1nLzE0Mzk3ODY5LnBuZw==/original/6J9fF%2F.png'
-        )
+        self.width = 80
+        self.height = 80
 
         self.health = health
         self.max_health = 100
@@ -29,7 +30,7 @@ class Player:
             (self.image.get_width() / 2, self.image.get_height() / 2),
             (self.image.get_width(), self.image.get_height()),
             (self.x, self.y),
-            (80, 80),
+            (self.width, self.height),
         )
 
     def update(self, keyboard):
@@ -54,6 +55,28 @@ class Player:
         # boundary check
         self.x = max(min(self.x, CANVAS_WIDTH - 40), 40)
         self.y = max(min(self.y, CANVAS_HEIGHT - 40), 40)
+
+    def get_hitbox(self):
+        return (self.x, self.y, self.width, self.height)
+
+    def get_top_left(self):
+        return (self.x - self.width / 2, self.y - self.height / 2)
+
+    def drw_test_hitbox(self, canvas):
+        sprite_top_left = (self.x - self.width / 2, self.y - self.height / 2)
+        canvas.draw_polygon(
+            [
+                (sprite_top_left[0], sprite_top_left[1]),
+                (sprite_top_left[0] + self.width, sprite_top_left[1]),
+                (
+                    sprite_top_left[0] + self.width,
+                    sprite_top_left[1] + self.height,
+                ),
+                (sprite_top_left[0], sprite_top_left[1] + self.height),
+            ],
+            2,
+            'blue',
+        )
 
     def get_health(self):
         return self.health

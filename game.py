@@ -10,6 +10,7 @@ from config import *
 from mouse import Mouse
 from bullet import Bullet
 from shoot import Shoot
+
 # end of new imports
 
 player = Player()
@@ -97,10 +98,12 @@ def draw(canvas):
     # draw bullets
     for bullet in bullets_list:
         bullet.draw(canvas)
+        bullet.draw_test_hitbox(bullet.get_top_left(), canvas)
         bullet.update()
 
     for zombie in zombies_list:
         zombie.draw(canvas)
+        zombie.draw_test_hitbox(zombie.get_top_left(), canvas)
         zombie.update()
 
     shoot.fire_rate_iterator()
@@ -108,6 +111,7 @@ def draw(canvas):
     floor_is_hit()
     remove_zombies()
     player.draw(canvas)
+    player.drw_test_hitbox(canvas)
     player.update(kbd)
     check_next_level()
 
