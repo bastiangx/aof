@@ -1,32 +1,29 @@
 import SimpleGUICS2Pygame.simpleguics2pygame as sg
 from random import uniform as ru
+from collision import Collision
 from user_input import *
 from zombies import Zombie
 from player import Player
 from levels import Level
 from config import *
 
-# new imports
 from mouse import Mouse
 from bullet import Bullet
 from shoot import Shoot
 
-# end of new imports
 
 player = Player()
 level = Level()
 kbd = Keyboard()
 zombies_list = []
 
-# new instances
-bullet = Bullet(x=player.x, y=player.y)
 shoot = Shoot()
 mouse = Mouse()
 
-# new lists
+collision = Collision()
+
 bullets_list = []
-bullets_to_remove_list = []
-# end of new instances and lists
+zombies_list = []
 
 
 def get_zombie_velocity(velocity_range):
@@ -50,30 +47,6 @@ def create_zombies(num_zombies, CANVAS_WIDTH):
         zombies_list.append(zombie)
 
 
-def floor_is_hit():
-    for zombie in zombies_list:
-        if zombie.has_hit_floor():
-            player.lose_floor_health()
-
-
-def remove_zombies():
-    zombies_to_remove = [
-        zombie for zombie in zombies_list if zombie.has_hit_floor()
-    ]
-    for zombie in zombies_to_remove:
-        zombies_list.remove(zombie)
-
-
-# new implementation
-# remove bullets that are off screen
-def remove_bullets():
-    bullets_to_remove = [
-        bullet for bullet in bullets_list if bullet.off_screen()
-    ]
-    for bullet in bullets_to_remove:
-        bullets_list.remove(bullet)
-
-
 # next level implementation
 def check_next_level():
     if len(zombies_list) == 0:
@@ -83,8 +56,6 @@ def check_next_level():
 
 
 def draw(canvas):
-    # new implementation
-    # mouse stuff
     if mouse.clicked and shoot.fire_rate_iterator() == 0:
         bullet = Bullet(x=player.x, y=player.y)
         bullets_list.append(bullet)
@@ -92,28 +63,30 @@ def draw(canvas):
         shoot.start_shooting(
             bullet, [player.x, player.y], mouse.get_position()
         )
-
         mouse.clicked = False
-
-    # draw bullets
-    for bullet in bullets_list:
-        bullet.draw(canvas)
-        bullet.draw_test_hitbox(bullet.get_top_left(), canvas)
-        bullet.update()
 
     for zombie in zombies_list:
         zombie.draw(canvas)
         zombie.draw_test_hitbox(zombie.get_top_left(), canvas)
         zombie.update()
 
-    shoot.fire_rate_iterator()
-    remove_bullets()
-    floor_is_hit()
-    remove_zombies()
+    for bullet in bullets_list:
+        bullet.draw(canvas)
+        bullet.draw_test_hitbox(bullet.get_top_left(), canvas)
+        bullet.update()
+
     player.draw(canvas)
     player.drw_test_hitbox(canvas)
     player.update(kbd)
+    shoot.fire_rate_iterator()
     check_next_level()
+
+    # collision stuff
+    collision.check_player_to_zombie(player, zombies_list)
+    collision.check_bullet_to_zombie(bullets_list, zombies_list)
+    collision.check_bullet_to_wall(bullets_list)
+    collision.check_zombie_to_base(zombies_list)
+    collision.reset_cache(level.current_level)
 
 
 frame = sg.create_frame('farmPy', CANVAS_WIDTH, CANVAS_HEIGHT, 0)
