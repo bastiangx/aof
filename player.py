@@ -1,16 +1,15 @@
-import SimpleGUICS2Pygame.simpleguics2pygame as sg
-from vector import Vector
+from config import CANVAS_WIDTH, CANVAS_HEIGHT
 from assets import PLAYER_IMG
+from vector import Vector
 from user_input import *
-from config import *
 
 
 class Player:
     def __init__(self, health=100):
         self.velocity = Vector(1, 1)
         self.velocity.normalize()
-        self.velocity_modifier = 5
-        self.velocity *= self.velocity_modifier
+        self.velocity_modifier = 8
+        # self.has_hit_wall = False
 
         self.image = PLAYER_IMG
 
@@ -49,10 +48,20 @@ class Player:
         if keyboard.right:
             direction.x += 1
 
-        self.x += self.velocity.x * direction.x
-        self.y += self.velocity.y * direction.y
+        # self.has_hit_wall = False
 
-        # boundary check
+        self.x += self.velocity.x * direction.x * self.velocity_modifier
+        self.y += self.velocity.y * direction.y * self.velocity_modifier
+
+        # boundary check, if hit wall, bouce
+        # if self.x < 0 or self.x > CANVAS_WIDTH:
+        #     self.velocity.x *= -0.8
+        #     self.has_hit_wall = True
+        #
+        # if self.y < 0 or self.y > CANVAS_HEIGHT:
+        #     self.velocity.y *= -0.8
+        #     self.has_hit_wall = True
+
         self.x = max(min(self.x, CANVAS_WIDTH - 40), 40)
         self.y = max(min(self.y, CANVAS_HEIGHT - 40), 40)
 
