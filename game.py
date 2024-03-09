@@ -1,94 +1,82 @@
 import SimpleGUICS2Pygame.simpleguics2pygame as sg
-from random import uniform as ru
+from config import CANVAS_WIDTH, CANVAS_HEIGHT
+from user_input import Keyboard
 from collision import Collision
-from user_input import *
-from zombies import Zombie
-from player import Player
-from levels import Level
-from config import *
+from score import Score
 
-from mouse import Mouse
+from factory import ZombieFactory, WaveFactory, FactoryHandler
 from bullet import Bullet
+from player import Player
+from mouse import Mouse
 from shoot import Shoot
 
-
+# entities initialization
 player = Player()
-level = Level()
-kbd = Keyboard()
-zombies_list = []
 
-shoot = Shoot()
+# input initialization
+kbd = Keyboard()
 mouse = Mouse()
 
+# logic initialization
 collision = Collision()
+shoot = Shoot()
+score = Score()
 
+# instance lists initialization
 bullets_list = []
 zombies_list = []
 
+# timers initialization
+ZombieFactory.spawn_cooldown = ZombieFactory().gen_cooldown()
+WaveFactory.spawn_cooldown = WaveFactory().gen_cooldown()
 
-def get_zombie_velocity(velocity_range):
-    if velocity_range == 'higher':
-        return ru(1, 2.2)
-    elif velocity_range == 'regular':
-        return ru(1, 1.5)
-    else:
-        return ru(0.4, 0.8)
-
-
-def create_zombies(num_zombies, CANVAS_WIDTH):
-    num_zombies = level.get_num_zombies()
-    velocity_range = level.get_velocity_range(num_zombies)
-
-    for _ in range(num_zombies):
-        x = ru(50, CANVAS_WIDTH - 50)
-        y = ru(50, 60) * -1
-        zombie_velocity = get_zombie_velocity(velocity_range)
-        zombie = Zombie(x, y, zombie_velocity, health=100)
-        zombies_list.append(zombie)
-
-
-# next level implementation
-def check_next_level():
-    if len(zombies_list) == 0:
-        level.next_level()
-        num_zombies = level.get_num_zombies()
-        create_zombies(num_zombies, CANVAS_WIDTH)
+# score initialization
+last_zombie_killed = 0
 
 
 def draw(canvas):
-    if mouse.clicked and shoot.fire_rate_iterator() == 0:
+    global zombies_list, bullets_list, last_zombie_killed
+
+    # shooting 
+    shoot.fire_rate() # update fire rate
+    if mouse.clicked and shoot.fire_rate() == 0:
         bullet = Bullet(x=player.x, y=player.y)
         bullets_list.append(bullet)
+        shoot.start(bullet, [player.x, player.y], mouse.get_position())
 
-        shoot.start_shooting(
-            bullet, [player.x, player.y], mouse.get_position()
-        )
-        mouse.clicked = False
+        mouse.clicked = False # reset click
 
+    # draw loops
     for zombie in zombies_list:
         zombie.draw(canvas)
-        zombie.draw_test_hitbox(zombie.get_top_left(), canvas)
         zombie.update()
 
     for bullet in bullets_list:
         bullet.draw(canvas)
-        bullet.draw_test_hitbox(bullet.get_top_left(), canvas)
         bullet.update()
 
+    # player 
     player.draw(canvas)
-    player.drw_test_hitbox(canvas)
     player.update(kbd)
-    shoot.fire_rate_iterator()
-    check_next_level()
 
-    # collision stuff
-    collision.check_player_to_zombie(player, zombies_list)
-    collision.check_bullet_to_zombie(bullets_list, zombies_list)
-    collision.check_bullet_to_wall(bullets_list)
-    collision.check_zombie_to_base(zombies_list)
-    collision.reset_cache(level.current_level)
+    # spawn zombies and waves
+    FactoryHandler.spawn_zombies(score.get_current_score(), zombies_list)
+
+    # collision call
+    collision.start(player, zombies_list, bullets_list)
+
+    # score update from bullet collision
+    zombies_killed = collision.zombies_killed
+    zombies_killed_delta = zombies_killed - last_zombie_killed
+
+    # if zombies are killed, increment score by the number of zombies killed
+    if zombies_killed_delta > 0:
+        score.increment_score(zombies_killed_delta)
+        last_zombie_killed = zombies_killed
+        print(f'Score: {score.get_current_score()}')
 
 
+# sg initialization
 frame = sg.create_frame('farmPy', CANVAS_WIDTH, CANVAS_HEIGHT, 0)
 frame.set_draw_handler(draw)
 
