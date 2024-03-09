@@ -1,9 +1,13 @@
-import SimpleGUICS2Pygame.simpleguics2pygame as sg
+from SimpleGUICS2Pygame.simpleguics2pygame import KEY_MAP as map
 import sys
 
 
 class Keyboard:
-    def __init__(self):
+    """
+    Handles all keyboard input
+    """
+
+    def __init__(self) -> None:
         self.right = False
         self.left = False
         self.up = False
@@ -11,37 +15,43 @@ class Keyboard:
         self.leader = False
 
     def keydown(self, key):
-        if key == sg.KEY_MAP['d'] or key == sg.KEY_MAP['right']:
+        """
+        Pressing down a key
+        """
+        if key == map['d'] or key == map['right']:
             self.right = True
 
-        if key == sg.KEY_MAP['a'] or key == sg.KEY_MAP['left']:
+        if key == map['a'] or key == map['left']:
             self.left = True
 
-        if key == sg.KEY_MAP['w'] or key == sg.KEY_MAP['up']:
+        if key == map['w'] or key == map['up']:
             self.up = True
 
-        if key == sg.KEY_MAP['s'] or key == sg.KEY_MAP['down']:
+        if key == map['s'] or key == map['down']:
             self.down = True
 
-        if key == sg.KEY_MAP['space']:
+        if key == map['space']:
             self.leader = True
 
             # dbg / quit app quick / remove later
-        if key == sg.KEY_MAP['z']:
+        if key == map['z']:
             sys.exit()
 
     def keyup(self, key):
-        if key == sg.KEY_MAP['d'] or key == sg.KEY_MAP['right']:
+        """
+        Releasing a key
+        """
+        if key == map['d'] or key == map['right']:
             self.right = False
 
-        if key == sg.KEY_MAP['a'] or key == sg.KEY_MAP['left']:
+        if key == map['a'] or key == map['left']:
             self.left = False
 
-        if key == sg.KEY_MAP['w'] or key == sg.KEY_MAP['up']:
+        if key == map['w'] or key == map['up']:
             self.up = False
 
-        if key == sg.KEY_MAP['s'] or key == sg.KEY_MAP['down']:
+        if key == map['s'] or key == map['down']:
             self.down = False
 
-        if key == sg.KEY_MAP['space']:
+        if key == map['space']:
             self.leader = False
