@@ -1,10 +1,12 @@
 from assets import BULLET_IMG
 from vector import Vector
-from config import *
 
-# draws bullets, updates their position, and checks for collisions
 class Bullet:
-    def __init__(self, x, y):
+    """
+    Draws Bullet, updates its position
+    """
+
+    def __init__(self, x, y) -> None:
         self.x = x
         self.y = y
         self.velocity = Vector(1, 1)
@@ -15,8 +17,6 @@ class Bullet:
         self.width = 20
         self.height = 20
 
-        self.damage = 10
-
     def draw(self, canvas):
         canvas.draw_image(
             self.image,
@@ -26,34 +26,20 @@ class Bullet:
             (self.width, self.height),
         )
 
-    def draw_test_hitbox(self, top_left, canvas):
-        canvas.draw_polygon(
-            [
-                (top_left[0], top_left[1]),
-                (top_left[0] + self.width, top_left[1]),
-                (top_left[0] + self.width, top_left[1] + self.height),
-                (top_left[0], top_left[1] + self.height),
-            ],
-            1,
-            'orange',
-        )
-
     # moves bullet
     def update(self):
         self.x += self.velocity.x
         self.y += self.velocity.y
 
-    # detect bullet if off screen
-    def off_screen(self):
-        return (
-            self.y <= 0
-            or self.y >= CANVAS_HEIGHT
-            or self.x <= 0
-            or self.x >= CANVAS_WIDTH
-        )
-
     def get_hitbox(self):
         return (self.x, self.y, self.width, self.height)
 
     def get_top_left(self):
+        """
+        Returns the top left corner of the bullet as a tuple of (x, y)
+        Reason: origin of the bullet is at the center, but we need to check for collision with the top left corner
+
+        Returns:
+            tuple: (x, y) of the top left corner of the bullet
+        """
         return (self.x - self.width / 2, self.y - self.height / 2)
