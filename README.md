@@ -2,18 +2,19 @@
 
 py-simplegui shooter game inspired by space invaders. [Royal Holloway university Project]
 
-###### this branch: **is_colliding**
+###### this branch: **score_based**
 
-#### Collision between Bullets, Zombies and Player
-all the collision detection check and handling is done in collision.py file
 
-**known issues:**
+#### New: factory classes
 
-- possible bug in deleting instances of zombies when they are being hit by bullets and player at the same time 
-	- possible solutions: 1. error handling, if x in list is empty, skip. 2. use flags to have collision between either bullet or player, not both at the same time 
-- possible cache size leak in collisions class. needs to be automated to be cleared after a certain size or time 
-- massive performance hindrance without the use of grids, or tree data structures for collision detection
-- possible tunnelling of bullets through zombies if their sizes gets too small or speed too fast
+no more level based spawns, normal zombies are spawned indefinitely, and the game gets harder as you progress.
+
+#### New: Score System
+
+skeleton implementation of a score system, the game now has a score system, gets updated when a zombie is killed via collisions.bullet_to_zombie() method.
+Waves are also triggered by reaching certain score thresholds.
+
+check each files docstrings for more info.
 
 <details>
 <summary> How to Run the game file? </summary>
