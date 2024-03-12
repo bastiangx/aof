@@ -13,8 +13,12 @@ class Keyboard:
         self.up = False
         self.down = False
         self.leader = False
+        self.pause = False
 
-    def keydown(self, key):
+        # dbg / quit app quick / remove later
+        self.z = False
+
+    def keydown(self, key: int) -> None:
         """
         Pressing down a key
         """
@@ -30,14 +34,18 @@ class Keyboard:
         if key == map['s'] or key == map['down']:
             self.down = True
 
+        if key == map['p']:
+            self.pause = True
+
         if key == map['space']:
             self.leader = True
 
             # dbg / quit app quick / remove later
         if key == map['z']:
+            self.z = True
             sys.exit()
 
-    def keyup(self, key):
+    def keyup(self, key: int) -> None:
         """
         Releasing a key
         """
@@ -52,6 +60,9 @@ class Keyboard:
 
         if key == map['s'] or key == map['down']:
             self.down = False
+
+        if key == map['p']:
+            self.pause = False
 
         if key == map['space']:
             self.leader = False
