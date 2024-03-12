@@ -17,16 +17,17 @@ class FactoryHandler:
     spawn_zombies(score, zombies_list) -> None: spawns zombies based on the score
 
     @staticmethod: do not require instantiation, do not require specific class instance/attribute
-    @classmethod: do not require instantiation, require specific class instance/attribute
+    @classmethod: do not require instantiation, require specific class instance/attribute to change
     """
 
     @staticmethod
-    def score_check(score):
+    def score_check(score: int) -> str:
         if 8 <= score <= 18:
             return str('wave')
+        return str('regular')
 
     @staticmethod
-    def can_preserve(score):
+    def can_preserve(score: int) -> bool:
         spawn_type = FactoryHandler.score_check(score)   # get the spawn type
 
         if spawn_type == 'wave':
@@ -35,7 +36,7 @@ class FactoryHandler:
         return False
 
     @staticmethod
-    def preserve():
+    def preserve() -> bool:
         current_time = time.time()   # get initial time
         elapsed_time = (
             current_time - WaveFactory.last_spawn_time
@@ -53,7 +54,7 @@ class FactoryHandler:
             return False
 
     @staticmethod
-    def spawn_zombies(score, zombies_list):
+    def spawn_zombies(score: int, zombies_list: list) -> None:
         spawn_type = FactoryHandler.score_check(score)   # get the spawn type
 
         if spawn_type == 'wave' and WaveFactory.can_spawn():
@@ -89,7 +90,7 @@ class ZombieFactory:
     spawn_cooldown = 2
 
     @staticmethod
-    def gen_velocity_range():
+    def gen_velocity_range() -> float:
         choice = rc(['higher', 'regular', 'lower'])
         return {
             'higher': ru(1.4, 2.4),
@@ -98,11 +99,11 @@ class ZombieFactory:
         }.get(choice, 1.25)
 
     @staticmethod
-    def gen_cooldown():
+    def gen_cooldown() -> float:
         return rn(2, 6)
 
     @staticmethod
-    def can_spawn():
+    def can_spawn() -> bool:
         current_time = time.time()
         elapsed_time = current_time - ZombieFactory.last_spawn_time
         cooldown = ZombieFactory.cooldown_calculation()
@@ -113,7 +114,7 @@ class ZombieFactory:
         return False
 
     @classmethod
-    def cooldown_calculation(cls):
+    def cooldown_calculation(cls: object) -> float:
         current_time = time.time()  # get the current time
         elapsed_time = (
             current_time - cls.last_adjustment_time
@@ -128,7 +129,7 @@ class ZombieFactory:
         return cls.spawn_cooldown * random_factor
 
     @staticmethod
-    def spawner():
+    def spawner() -> Zombie:
         y = ru(400, 1400) * -1
         x = ru(50, CANVAS_WIDTH - 50)
         velocity = ZombieFactory.gen_velocity_range()
@@ -147,7 +148,7 @@ class WaveFactory:
     spawn_cooldown = 1
 
     @staticmethod # override: no slow velocity
-    def gen_velocity_range():
+    def gen_velocity_range() -> float:
         choice = rc(['higher', 'regular'])
         return {
             'higher': ru(2, 2.8),
@@ -155,11 +156,11 @@ class WaveFactory:
         }.get(choice, 1.5)
 
     @staticmethod
-    def gen_cooldown():
+    def gen_cooldown() -> float:
         return rn(2, 3)
 
     @staticmethod
-    def can_spawn():
+    def can_spawn() -> bool:
         current_time = time.time()
         elapsed_time = current_time - WaveFactory.last_spawn_time
         cooldown = WaveFactory.cooldown_calculation()
@@ -170,7 +171,7 @@ class WaveFactory:
         return False
 
     @classmethod
-    def cooldown_calculation(cls):
+    def cooldown_calculation(cls: object) -> float:
         current_time = time.time()
         elapsed_time = current_time - cls.last_adjustment_time
 
@@ -183,7 +184,7 @@ class WaveFactory:
         return cls.spawn_cooldown * random_factor
 
     @staticmethod
-    def spawner():
+    def spawner() -> Zombie:
         y = ru(300, 1000) * -1
         # override: closer spawn to screen and together
         x = ru(50, CANVAS_WIDTH - 50)

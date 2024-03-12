@@ -1,5 +1,4 @@
 from assets import ZOMBIE_IMG
-from user_input import *
 
 
 class Zombie:

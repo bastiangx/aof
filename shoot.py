@@ -1,5 +1,4 @@
 from vector import Vector
-from bullet import Bullet
 
 
 class Shoot:
@@ -18,7 +17,7 @@ class Shoot:
         self.cooldown_counter = 0
         self.cooldown = 20
 
-    def fire_rate(self):
+    def fire_rate(self) -> int:
         if self.cooldown_counter >= self.cooldown:
             self.cooldown_counter = 0
         elif self.cooldown_counter > 0:
@@ -26,13 +25,13 @@ class Shoot:
 
         return self.cooldown_counter
 
-    def aim(self, player_pos, mouse_pos):
+    def aim(self, player_pos: tuple, mouse_pos: tuple) -> Vector:
         aim_direction = Vector(
             mouse_pos[0] - player_pos[0], mouse_pos[1] - player_pos[1]
         )
         return aim_direction.normalize()
 
-    def start(self, bullet, player_pos, mouse_pos):
+    def start(self, bullet: object, player_pos: tuple, mouse_pos: tuple) -> None:
         aim_direction = self.aim(player_pos, mouse_pos)
         bullet.velocity = aim_direction * bullet.velocity_modifier
 

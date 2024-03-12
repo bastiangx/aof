@@ -21,7 +21,7 @@ class Collision:
 
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         # cache the heavy collision checks to massively improve perf
         self.cache = {}
         self.cahe_cleared = False
@@ -34,7 +34,7 @@ class Collision:
         # for score tracking
         self.zombies_killed = 0
 
-    def player_to_zombie(self, player, zombies_list):
+    def player_to_zombie(self, player: object, zombies_list) -> None:
         player_hitbox = player.get_hitbox()
         # clear the list of zombies to remove correct instances
         self.zombies_to_remove.clear()
@@ -57,7 +57,7 @@ class Collision:
         for zombie in self.zombies_to_remove:
             zombies_list.remove(zombie)
 
-    def bullet_to_zombie(self, bullets_list, zombies_list):
+    def bullet_to_zombie(self, bullets_list: list, zombies_list: list) -> None:
 
         self.bullets_to_remove.clear()
         self.zombies_to_remove.clear()
@@ -86,7 +86,7 @@ class Collision:
         for zombie in self.zombies_to_remove:
             zombies_list.remove(zombie)
 
-    def bullet_to_wall(self, bullets_list):
+    def bullet_to_wall(self, bullets_list: list) -> None:
         self.bullets_to_remove.clear()
 
         for bullet in bullets_list:
@@ -105,7 +105,7 @@ class Collision:
             bullets_list.remove(bullet)
 
     # zomb reaching bottom of screen
-    def zombie_to_base(self, zombies_list):
+    def zombie_to_base(self, zombies_list: list) -> None:
         self.zombies_to_remove.clear()
 
         for zombie in zombies_list:
@@ -118,7 +118,7 @@ class Collision:
 
         # main collision check func
 
-    def is_collision(self, hitbox1, hitbox2):
+    def is_collision(self, hitbox1: list, hitbox2: list) -> bool:
         return (  # check if corners of hitbox1 are inside hitbox2
             hitbox1[0] < hitbox2[0] + hitbox2[2]
             and hitbox1[0] + hitbox1[2] > hitbox2[0]
@@ -126,7 +126,7 @@ class Collision:
             and hitbox1[1] + hitbox1[3] > hitbox2[1]
         )
 
-    def reset_cache(self):
+    def reset_cache(self) -> None:
         # clear every 120 seconds
         # maintainance - important to reset
         current_time = time.time()
@@ -137,7 +137,7 @@ class Collision:
         elif current_time % 60 != 0:
             self.cahe_cleared = False
 
-    def start(self, player, zombies_list, bullets_list):
+    def start(self, player: object, zombies_list: list, bullets_list: list) -> None:
         """
         calls all the collision methods
         housekeeping
