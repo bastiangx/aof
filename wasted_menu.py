@@ -1,4 +1,4 @@
-from assets import PLAY_BTN, OPTIONS_BTN, EXIT_BTN
+from assets import PLAY_BTN, EXIT_BTN
 from config import CANVAS_WIDTH, CANVAS_HEIGHT
 
 
@@ -120,7 +120,6 @@ class WastedMenu:
         ):
             return 'play'
 
-
         # Exit button
         elif (
             exit_btn_x < x < exit_btn_x + self.buttons_width
@@ -130,4 +129,3 @@ class WastedMenu:
 
         else:
             return None
-
