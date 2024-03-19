@@ -3,7 +3,7 @@ Main gameplay logic class
 Handles game rendering and all interactions
 """
 # logic/factories imports
-from factory import ZombieFactory, WaveFactory, FactoryHandler
+from zombies_factory import ZombieFactory, WaveFactory, FactoryHandler
 from collision import Collision
 
 import sys

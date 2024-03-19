@@ -4,5 +4,5 @@ CANVAS_HEIGHT = 900
 
 # font 
 SCORE_FONT: str = 'monospace'
-SCORE_FONT_SIZE = 18
+SCORE_FONT_SIZE = 32
 
