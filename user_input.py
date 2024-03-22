@@ -12,7 +12,6 @@ class Keyboard:
         self.left = False
         self.up = False
         self.down = False
-        self.leader = False
         self.pause = False
 
         # dbg / quit app quick / remove later
@@ -37,9 +36,6 @@ class Keyboard:
         if key == map['p']:
             self.pause = True
 
-        if key == map['space']:
-            self.leader = True
-
             # dbg / quit app quick / remove later
         if key == map['z']:
             self.z = True
@@ -63,6 +59,3 @@ class Keyboard:
 
         if key == map['p']:
             self.pause = False
-
-        if key == map['space']:
-            self.leader = False

@@ -1,4 +1,4 @@
-from assets import PLAY_BTN, OPTIONS_BTN, EXIT_BTN
+from assets import PLAY_BTN, EXIT_BTN, GUIDE_IMG, TITLE_IMG, MAIN_BG
 from config import CANVAS_WIDTH, CANVAS_HEIGHT
 
 
@@ -11,13 +11,22 @@ class MainMenu:
 
     def __init__(self) -> None:
         self.play_btn_img = PLAY_BTN
-        self.options_btn_img = OPTIONS_BTN
         self.exit_btn_img = EXIT_BTN
+        self.guide_img = GUIDE_IMG
+        self.title_img = TITLE_IMG
+        self.main_bg = MAIN_BG
 
-        self.buttons_width = 200
-        self.buttons_height = 100
+        self.buttons_width = 225
+        self.buttons_height = 130
+
+        self.guide_width = 600
+        self.guide_height = 400
+
+        self.title_width = 900
+        self.title_height = 500
+
         self.margin = 20
-        self.menu_offset = 1.4
+        self.menu_offset = 1.18
 
         self.midpoint_width = CANVAS_WIDTH // 2
         self.midpoint_height = CANVAS_HEIGHT // 2
@@ -42,40 +51,86 @@ class MainMenu:
         return the top-left corner of each button for click detection
         """
         # x positions
-        play_btn_x = self.midpoint_width - self.buttons_width / 2
-        options_btn_x = play_btn_x
-        exit_btn_x = play_btn_x
+        base_x = (
+            self.midpoint_width - self.buttons_width - (self.margin * 8)
+        ) / 2
+
+        play_btn_x = base_x
+        exit_btn_x = base_x
 
         # y positions
-        base_y = self.midpoint_height + self.margin
+        base_y = (self.midpoint_height + self.margin) * self.menu_offset
 
         play_btn_y = base_y
-        options_btn_y = base_y + self.buttons_height + self.margin
-        exit_btn_y = options_btn_y + self.buttons_height + self.margin
+        exit_btn_y = play_btn_y + self.buttons_height + (self.margin * 2)
 
         # Return the top-left corner of each button
         return (
             play_btn_x,
             play_btn_y,
-            options_btn_x,
-            options_btn_y,
             exit_btn_x,
             exit_btn_y,
         )
 
+    def calculate_guide_position(
+        self, buttons_x: int, buttons_y: int
+    ) -> tuple:
+        """
+        Calculate the x and y positions of the guide image
+        based on a margin from the buttons x and y positions
+        """
+        # x position
+        guide_x = buttons_x + self.buttons_width + (self.margin * 4)
+
+        # y position
+        guide_y = buttons_y - self.margin - 50
+        return (guide_x, guide_y)
+
+    def calculate_title_position(self) -> tuple:
+        """
+        Calculate the x and y positions of the title image
+        """
+        # x position
+        title_x = self.midpoint_width - self.title_width / 2
+
+        # y position
+        title_y = self.margin / 2
+        return (title_x, title_y)
+
     def render(self, canvas: object) -> None:
         """
-        Render the buttons on canvas
+        Render stuff on canvas
         """
+        # get the x and y positions of the buttons
         (
             play_btn_x,
             play_btn_y,
-            options_btn_x,
-            options_btn_y,
             exit_btn_x,
             exit_btn_y,
         ) = self.calculate_button_positions()
 
+        # get the x and y positions of the guide image
+        (guide_x, guide_y) = self.calculate_guide_position(
+            play_btn_x, play_btn_y
+        )
+
+        # get the x and y positions of the title image
+        (title_x, title_y) = self.calculate_title_position()
+
+        # main background
+        canvas.draw_image(
+            self.main_bg,
+            (
+                self.main_bg.get_width() / 2,
+                self.main_bg.get_height() / 2,
+            ),
+            (self.main_bg.get_width(), self.main_bg.get_height()),
+            (
+                CANVAS_WIDTH / 2,
+                CANVAS_HEIGHT / 2,
+            ),
+            (CANVAS_WIDTH, CANVAS_HEIGHT),
+        )
         # Play button
         canvas.draw_image(
             self.play_btn_img,
@@ -87,24 +142,6 @@ class MainMenu:
             (
                 play_btn_x + self.buttons_width / 2,
                 play_btn_y + self.buttons_height / 2,
-            ),
-            (self.buttons_width, self.buttons_height),
-        )
-
-        # Options button
-        canvas.draw_image(
-            self.options_btn_img,
-            (
-                self.options_btn_img.get_width() / 2,
-                self.options_btn_img.get_height() / 2,
-            ),
-            (
-                self.options_btn_img.get_width(),
-                self.options_btn_img.get_height(),
-            ),
-            (
-                options_btn_x + self.buttons_width / 2,
-                options_btn_y + self.buttons_height / 2,
             ),
             (self.buttons_width, self.buttons_height),
         )
@@ -123,6 +160,36 @@ class MainMenu:
             (self.buttons_width, self.buttons_height),
         )
 
+        # Guide image
+        canvas.draw_image(
+            self.guide_img,
+            (
+                self.guide_img.get_width() / 2,
+                self.guide_img.get_height() / 2,
+            ),
+            (self.guide_img.get_width(), self.guide_img.get_height()),
+            (
+                guide_x + self.guide_width / 2,
+                guide_y + self.guide_height / 2,
+            ),
+            (self.guide_width, self.guide_height),
+        )
+
+        # Title image
+        canvas.draw_image(
+            self.title_img,
+            (
+                self.title_img.get_width() / 2,
+                self.title_img.get_height() / 2,
+            ),
+            (self.title_img.get_width(), self.title_img.get_height()),
+            (
+                title_x + self.title_width / 2,
+                title_y + self.title_height / 2,
+            ),
+            (self.title_width, self.title_height),
+        )
+
     def click(self, position: tuple) -> str:
         """
         Detection based on the position of the mouse click on canvas
@@ -133,8 +200,6 @@ class MainMenu:
         (
             play_btn_x,
             play_btn_y,
-            options_btn_x,
-            options_btn_y,
             exit_btn_x,
             exit_btn_y,
         ) = self.calculate_button_positions()
@@ -145,13 +210,6 @@ class MainMenu:
             and play_btn_y < y < play_btn_y + self.buttons_height
         ):
             return 'play'
-
-        # Options button
-        elif (
-            options_btn_x < x < options_btn_x + self.buttons_width
-            and options_btn_y < y < options_btn_y + self.buttons_height
-        ):
-            return 'options'
 
         # Exit button
         elif (

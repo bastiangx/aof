@@ -31,7 +31,7 @@ class Score:
         """return width and height of str(current_score)"""
         """ give minimum width and height of 20 and 40, then the str will be centred"""
         return (
-            max(20, len(str(self.current_score)) * 20),
+            max(40, len(str(self.current_score)) * 60),
             max(40, 40),
         )
 

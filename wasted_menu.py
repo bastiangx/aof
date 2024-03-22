@@ -16,7 +16,6 @@ class WastedMenu:
         self.buttons_width = 200
         self.buttons_height = 100
         self.margin = 20
-        self.menu_offset = 1.15
 
         self.midpoint_width = CANVAS_WIDTH // 2
         self.midpoint_height = CANVAS_HEIGHT // 2
@@ -45,7 +44,7 @@ class WastedMenu:
         exit_btn_x = play_btn_x
 
         # y positions
-        base_y = self.midpoint_height + self.margin
+        base_y = self.midpoint_height + self.margin + self.buttons_height
 
         play_btn_y = base_y
         exit_btn_y = play_btn_y + self.buttons_height + self.margin
