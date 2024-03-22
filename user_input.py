@@ -1,47 +1,61 @@
-import SimpleGUICS2Pygame.simpleguics2pygame as sg
+from SimpleGUICS2Pygame.simpleguics2pygame import KEY_MAP as map
 import sys
 
 
 class Keyboard:
-    def __init__(self):
+    """
+    Handles all keyboard input
+    """
+
+    def __init__(self) -> None:
         self.right = False
         self.left = False
         self.up = False
         self.down = False
-        self.leader = False
+        self.pause = False
 
-    def keydown(self, key):
-        if key == sg.KEY_MAP['d'] or key == sg.KEY_MAP['right']:
+        # dbg / quit app quick / remove later
+        self.z = False
+
+    def keydown(self, key: int) -> None:
+        """
+        Pressing down a key
+        """
+        if key == map['d'] or key == map['right']:
             self.right = True
 
-        if key == sg.KEY_MAP['a'] or key == sg.KEY_MAP['left']:
+        if key == map['a'] or key == map['left']:
             self.left = True
 
-        if key == sg.KEY_MAP['w'] or key == sg.KEY_MAP['up']:
+        if key == map['w'] or key == map['up']:
             self.up = True
 
-        if key == sg.KEY_MAP['s'] or key == sg.KEY_MAP['down']:
+        if key == map['s'] or key == map['down']:
             self.down = True
 
-        if key == sg.KEY_MAP['space']:
-            self.leader = True
+        if key == map['p']:
+            self.pause = True
 
             # dbg / quit app quick / remove later
-        if key == sg.KEY_MAP['z']:
+        if key == map['z']:
+            self.z = True
             sys.exit()
 
-    def keyup(self, key):
-        if key == sg.KEY_MAP['d'] or key == sg.KEY_MAP['right']:
+    def keyup(self, key: int) -> None:
+        """
+        Releasing a key
+        """
+        if key == map['d'] or key == map['right']:
             self.right = False
 
-        if key == sg.KEY_MAP['a'] or key == sg.KEY_MAP['left']:
+        if key == map['a'] or key == map['left']:
             self.left = False
 
-        if key == sg.KEY_MAP['w'] or key == sg.KEY_MAP['up']:
+        if key == map['w'] or key == map['up']:
             self.up = False
 
-        if key == sg.KEY_MAP['s'] or key == sg.KEY_MAP['down']:
+        if key == map['s'] or key == map['down']:
             self.down = False
 
-        if key == sg.KEY_MAP['space']:
-            self.leader = False
+        if key == map['p']:
+            self.pause = False

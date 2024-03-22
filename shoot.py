@@ -1,45 +1,38 @@
-from player import Player
-from bullet import Bullet
-# from zombies import Zombie
-# from mouse import Mouse
-from user_input import Keyboard
+from vector import Vector
 
 
 class Shoot:
-    def __init__(self):
-        self.bullets = []
-        self.bullets_to_remove = []
+    """
+    create bullet instance, set velocity to aim direction
+    and reset cooldown counter
+
+    Methods:
+
+    fire_rate_iterator: limits the rate of fire - shoot spam
+    aim: calculates the direction to shoot based on player[origin] and mouse pos[target]
+    start: set aim to velocity, reset cooldown
+    """
+
+    def __init__(self) -> None:
         self.cooldown_counter = 0
         self.cooldown = 30
 
-    def fire_rate_iterator(self):
+    def fire_rate(self) -> int:
         if self.cooldown_counter >= self.cooldown:
             self.cooldown_counter = 0
         elif self.cooldown_counter > 0:
             self.cooldown_counter += 1
 
-    def shoot(self):
-        if self.cooldown_counter == 0 and Keyboard.leader:
-            self.bullets.append(Bullet(Player.x, Player.y))
-            self.cooldown_counter = 1
+        return self.cooldown_counter
 
-    def draw(self, canvas):
-        for bullet in self.bullets:
-            bullet.draw(canvas)
+    def aim(self, player_pos: tuple, mouse_pos: tuple) -> Vector:
+        aim_direction = Vector(
+            mouse_pos[0] - player_pos[0], mouse_pos[1] - player_pos[1]
+        )
+        return aim_direction.normalize()
 
-    def update(self):
-        for bullet in self.bullets:
-            bullet.update()
-            if bullet.off_screen():
-                self.bullets_to_remove.append(bullet)
+    def start(self, bullet: object, player_pos: tuple, mouse_pos: tuple) -> None:
+        aim_direction = self.aim(player_pos, mouse_pos)
+        bullet.velocity = aim_direction * bullet.velocity_modifier
 
-        for bullet in self.bullets_to_remove:
-            self.bullets.remove(bullet)
-
-    def damage_zombies(self, zombies):
-        for bullet in self.bullets:
-            for zombie in zombies:
-                if bullet.is_collided(zombie):
-                    bullet_index = self.bullets.index(bullet)
-                    self.bullets.pop(bullet_index)
-                    zombie.lose_health(Bullet.damage)
+        self.cooldown_counter = 1

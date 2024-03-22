@@ -1,35 +1,47 @@
 from SimpleGUICS2Pygame.simpleguics2pygame import (
     _load_local_image as get_image,
+    _load_local_sound as get_sound,
 )
 from os.path import join as pj
 from os import getcwd
 
-"""
-# Pathfinder
-Defines the paths for various assets
-"""
 
-IMAGE_PATH = getcwd() + '/assets/images/'
-ANIMATION_PATH = getcwd() + 'assets/animations/'
-AUDIO_PATH = getcwd() + 'assets/audio/'
-FONT_PATH = getcwd() + 'assets/fonts/'
+class Pathfinder:
 
-# Bullet stuff
-BULLET_IMG = get_image(pj(IMAGE_PATH, 'bullet.png'))
+    """
+    Defines the paths for various assets and loads them
+    """
 
-# Player stuff
-PLAYER_IMG = get_image(pj(IMAGE_PATH, 'player.png'))
+    IMAGE_PATH = getcwd() + '/assets/images/'
+    BUTTON_PATH = getcwd() + '/assets/buttons/'
+    ANIMATION_PATH = getcwd() + 'assets/animations/'
+    AUDIO_PATH = getcwd() + 'assets/audio/'
+    FONT_PATH = getcwd() + 'assets/fonts/'
 
-# Zombie stuff
-ZOMBIE_IMG = get_image(pj(IMAGE_PATH, 'enemy-1.png'))
+    @staticmethod
+    def load_image(name: str) -> object:
+        return get_image(pj(Pathfinder.IMAGE_PATH, name))
 
-# Background stuff
+    @staticmethod
+    def load_button(name: str) -> object:
+        return get_image(pj(Pathfinder.BUTTON_PATH, name))
 
-# Barn / farm / base stuff
-# BARN_IMG = sg.load_image(
-#     'https://img.itch.zone/aW1nLzE0Mzk3ODY5LnBuZw==/original/6J9fF%2F.png'
-# )
+    @staticmethod
+    def load_sound(name: str) -> object:
+        return pj(Pathfinder.AUDIO_PATH, name)
 
-# Sound stuff
 
-# GUI stuff
+# Sprites
+PLAYER_IMG = Pathfinder.load_image('player.png')
+ZOMBIE_IMG = Pathfinder.load_image('enemy-1.png')
+BULLET_IMG = Pathfinder.load_image('bullet.png')
+
+# Buttons
+PLAY_BTN = Pathfinder.load_button('PlayBtn.png')
+OPTIONS_BTN = Pathfinder.load_button('OptBtn.png')
+EXIT_BTN = Pathfinder.load_button('ExitBtn.png')
+
+# Main Menu stuff
+TITLE_IMG = Pathfinder.load_image('hero-title.png')
+GUIDE_IMG = Pathfinder.load_image('guideV2.png')
+MAIN_BG = Pathfinder.load_image('mm-bg.png')

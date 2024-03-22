@@ -1,16 +1,18 @@
 from assets import ZOMBIE_IMG
-from user_input import *
-from config import *
 
 
 class Zombie:
-    def __init__(self, x, y, velocity, health=100):
+    """
+    Draws and update the zombie
+    """
+
+    def __init__(self, x, y, velocity) -> None:
         self.velocity = velocity
+
         self.x = x
         self.y = y
-
-        self.health = health
-        self.max_health = health
+        self.width = 50
+        self.height = 50
 
         self.image = ZOMBIE_IMG
 
@@ -20,7 +22,7 @@ class Zombie:
             (self.image.get_width() / 2, self.image.get_height() / 2),
             (self.image.get_width(), self.image.get_height()),
             (self.x, self.y),
-            (50, 50),
+            (self.width, self.height),
         )
 
     def update(self):
@@ -29,17 +31,8 @@ class Zombie:
     def move_down(self):
         self.y += self.velocity
 
-    def get_height(self):
-        return self.image.get_height()
+    def get_hitbox(self):
+        return (self.x, self.y, self.width, self.height)
 
-    def get_health(self):
-        return self.health
-
-    def get_max_health(self):
-        return self.max_health
-
-    def lose_health(self, damage):
-        self.health -= damage
-
-    def has_hit_floor(self):
-        return self.y - 50 >= CANVAS_HEIGHT
+    def get_top_left(self):
+        return (self.x - self.width / 2, self.y - self.height / 2)
