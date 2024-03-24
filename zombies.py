@@ -1,4 +1,5 @@
 from assets import ZOMBIE_IMG
+from health import PlayerHealth
 
 
 class Zombie:
@@ -13,6 +14,7 @@ class Zombie:
         self.y = y
         self.width = 50
         self.height = 50
+        self.health = PlayerHealth(100, 30, 0, False)
 
         self.image = ZOMBIE_IMG
 

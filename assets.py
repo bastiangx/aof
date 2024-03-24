@@ -32,10 +32,11 @@ class Pathfinder:
 
 
 # Sprites
-PLAYER_IMG = Pathfinder.load_image('player.png')
-ZOMBIE_IMG = Pathfinder.load_image('enemy-1.png')
+PLAYER_IMG = Pathfinder.load_image('Farmer.png')
+ZOMBIE_IMG = Pathfinder.load_image('Zombie.png')
 BULLET_IMG = Pathfinder.load_image('bullet.png')
-
+BACKGROUND_IMG = Pathfinder.load_image('Background.png')
+PLAYER_HEALTH_IMG = Pathfinder.load_image('player health.png')
 # Buttons
 PLAY_BTN = Pathfinder.load_button('PlayBtn.png')
 OPTIONS_BTN = Pathfinder.load_button('OptBtn.png')
@@ -45,3 +46,8 @@ EXIT_BTN = Pathfinder.load_button('ExitBtn.png')
 TITLE_IMG = Pathfinder.load_image('hero-title.png')
 GUIDE_IMG = Pathfinder.load_image('guideV2.png')
 MAIN_BG = Pathfinder.load_image('mm-bg.png')
+
+# Sounds
+GAME_PLAY = Pathfinder.load_sound("")
+BULLET_SOUND = Pathfinder.load_sound("")
+BACKGROUND = Pathfinder.load_sound("")

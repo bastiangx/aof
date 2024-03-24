@@ -1,7 +1,10 @@
 import SimpleGUICS2Pygame.simpleguics2pygame as sg
 
+from background import Background
 from config import CANVAS_WIDTH, CANVAS_HEIGHT
+from assets import BACKGROUND_IMG
 
+from player import Player
 from user_input import Keyboard
 from gameplay import Gameplay
 from mouse import Mouse
@@ -22,6 +25,7 @@ kbd = Keyboard()
 # global instances
 main_menu = MainMenu()
 gameplay = Gameplay()
+player = Player()
 
 # Game states
 STATE_APP: bool = True   # app launcher/ always True unless quitting app
@@ -39,6 +43,9 @@ state = STATE_MAIN_MENU
 # state machine
 def app_draw(canvas: object) -> None:
     global state, game_reset
+    
+    background = Background(BACKGROUND_IMG, CANVAS_WIDTH, CANVAS_HEIGHT)
+    
     # Main menu loop
     if state == STATE_MAIN_MENU:
 
@@ -56,7 +63,11 @@ def app_draw(canvas: object) -> None:
 
     # Gameplay loop
     elif state == STATE_GAMEPLAY:
-        gameplay.render(canvas, kbd, mouse)
+        background.draw(canvas, player.x, player.y)
+
+        player.draw(canvas)
+
+        player.update(kbd)
 
 
 # flags reset
@@ -69,6 +80,7 @@ def main(kbd: object, mouse: object) -> None:
     frame = sg.create_frame('AoF', CANVAS_WIDTH, CANVAS_HEIGHT, 0)
     frame.set_draw_handler(app_draw)
     frame.set_canvas_background('rgba(38, 64, 69, 1)')
+    background = Background(BACKGROUND_IMG, CANVAS_WIDTH, CANVAS_HEIGHT)
 
     frame.set_keydown_handler(kbd.keydown)
     frame.set_keyup_handler(kbd.keyup)

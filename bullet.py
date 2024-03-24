@@ -1,6 +1,7 @@
 from assets import BULLET_IMG
 from vector import Vector
 
+
 class Bullet:
     """
     Draws Bullet, updates its position

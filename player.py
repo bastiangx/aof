@@ -1,6 +1,7 @@
 from config import CANVAS_WIDTH, CANVAS_HEIGHT
 from assets import PLAYER_IMG
 from vector import Vector
+from health import PlayerHealth
 
 
 class Player:
@@ -18,6 +19,7 @@ class Player:
         self.y = CANVAS_HEIGHT / 1.1
         self.width = 80
         self.height = 80
+        self.health = PlayerHealth(100, 50,50, False)
 
     def draw(self, canvas: object) -> None:
         canvas.draw_image(

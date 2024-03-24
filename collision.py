@@ -52,6 +52,11 @@ class Collision:
                 collision = self.is_collision(player_hitbox, zombie_hitbox)
                 self.cache[key] = collision
                 if collision:
+                    self.cache[key] = collision
+                    if collision:
+                        player.health.take_damage(zombie.health.get_damage())
+                        if player.health.is_dead():
+                            return 
                     self.zombies_to_remove.append(zombie)
 
         for zombie in self.zombies_to_remove:
