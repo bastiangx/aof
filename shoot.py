@@ -15,7 +15,7 @@ class Shoot:
 
     def __init__(self) -> None:
         self.cooldown_counter = 0
-        self.cooldown = 30
+        self.cooldown = 20
 
     def fire_rate(self) -> int:
         if self.cooldown_counter >= self.cooldown:

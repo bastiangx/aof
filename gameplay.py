@@ -3,7 +3,7 @@ Main gameplay logic class
 Handles game rendering and all interactions
 """
 # logic/factories imports
-from zombies_factory import ZombieFactory, WaveFactory, FactoryHandler
+from factory import ZombieFactory, WaveFactory, FactoryHandler
 from collision import Collision
 
 import sys
@@ -50,6 +50,7 @@ class Gameplay:
         zombies_list.clear()
         bullets_list.clear()
         score.current_score = 0
+        score.high_score =0
 
     @staticmethod
     def render(canvas: object, kbd: object, mouse: object) -> None:

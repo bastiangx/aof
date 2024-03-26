@@ -70,35 +70,21 @@ class Collision:
                 key = (tuple(bullet_hitbox), tuple(zombie_hitbox))
                 if key in self.cache:
                     if self.cache[key]:
-                        try:
-                            self.bullets_to_remove.append(bullet)
-                            self.zombies_to_remove.append(zombie)
-                            self.zombies_killed += 1
-                        except ValueError:
-                            print('Two bullets hit the same zombie')
-
+                        self.bullets_to_remove.append(bullet)
+                        self.zombies_to_remove.append(zombie)
+                        self.zombies_killed += 1
                 else:
                     collision = self.is_collision(bullet_hitbox, zombie_hitbox)
                     self.cache[key] = collision
                     if collision:
-                        try:
-                            self.bullets_to_remove.append(bullet)
-                            self.zombies_to_remove.append(zombie)
-                            self.zombies_killed += 1
-                        except ValueError:
-                            print('Two bullets hit the same zombie')
+                        self.bullets_to_remove.append(bullet)
+                        self.zombies_to_remove.append(zombie)
+                        self.zombies_killed += 1
 
         for bullet in self.bullets_to_remove:
-            try:
-                bullets_list.remove(bullet)
-            except ValueError:
-                print('Two bullets hit the same zombie')
-
+            bullets_list.remove(bullet)
         for zombie in self.zombies_to_remove:
-            try:
-                zombies_list.remove(zombie)
-            except ValueError:
-                print('Two bullets hit the same zombie')
+            zombies_list.remove(zombie)
 
     def bullet_to_wall(self, bullets_list: list) -> None:
         self.bullets_to_remove.clear()
@@ -151,9 +137,7 @@ class Collision:
         elif current_time % 60 != 0:
             self.cahe_cleared = False
 
-    def start(
-        self, player: object, zombies_list: list, bullets_list: list
-    ) -> None:
+    def start(self, player: object, zombies_list: list, bullets_list: list) -> None:
         """
         calls all the collision methods
         housekeeping

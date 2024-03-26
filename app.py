@@ -14,13 +14,27 @@ Main app launcher
 Loads the dependencies and launches the app
 simplegui API calls
 """
+high_scores1 = []
+
+def read_high_score():
+    try:
+        with open('high_score.txt', 'r') as file:
+            for line in file:
+                high_scores1.append(int(line.strip()))
+    except FileNotFoundError:
+        # Handle case where file does not exist
+        pass
+
+read_high_score()
 
 # global input handlers
 mouse = Mouse()
 kbd = Keyboard()
+high_scores = [("Player 1", high_scores1[0]),("Player 2", high_scores1[1]),("Player 3", high_scores1[2])]
+menu = MainMenu(high_scores)
 
 # global instances
-main_menu = MainMenu()
+main_menu = MainMenu(high_scores)
 gameplay = Gameplay()
 
 # Game states
@@ -38,25 +52,22 @@ state = STATE_MAIN_MENU
 
 # state machine
 def app_draw(canvas: object) -> None:
-    global state, game_reset
+    global state
+
     # Main menu loop
     if state == STATE_MAIN_MENU:
-
-        # Render main menu
         main_menu.render(canvas)
-
-        # if play is clicked, switch to the gameplay
         main_menu_event = main_menu.handler(mouse)
         if main_menu_event == 'play':
             state = STATE_GAMEPLAY
-            game_reset = True
-
-        if main_menu_event == 'exit':
+        elif main_menu_event == 'exit':
             app_quit()
 
     # Gameplay loop
     elif state == STATE_GAMEPLAY:
         gameplay.render(canvas, kbd, mouse)
+        
+
 
 
 # flags reset

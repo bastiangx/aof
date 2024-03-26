@@ -40,8 +40,3 @@ BULLET_IMG = Pathfinder.load_image('bullet.png')
 PLAY_BTN = Pathfinder.load_button('PlayBtn.png')
 OPTIONS_BTN = Pathfinder.load_button('OptBtn.png')
 EXIT_BTN = Pathfinder.load_button('ExitBtn.png')
-
-# Main Menu stuff
-TITLE_IMG = Pathfinder.load_image('hero-title.png')
-GUIDE_IMG = Pathfinder.load_image('guideV2.png')
-MAIN_BG = Pathfinder.load_image('mm-bg.png')

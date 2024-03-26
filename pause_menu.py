@@ -1,15 +1,16 @@
-from assets import PLAY_BTN, EXIT_BTN
+from assets import PLAY_BTN, OPTIONS_BTN, EXIT_BTN
 from config import CANVAS_WIDTH, CANVAS_HEIGHT
 
 
 class PauseMenu:
     def __init__(self) -> None:
         self.play_btn_img = PLAY_BTN
+        self.options_btn_img = OPTIONS_BTN
         self.exit_btn_img = EXIT_BTN
 
         self.buttons_width = 300
         self.buttons_height = 150
-        self.margin = 20
+        self.margin = 275
 
         self.midpoint_width = CANVAS_WIDTH // 2
         self.midpoint_height = CANVAS_HEIGHT // 2
@@ -24,19 +25,24 @@ class PauseMenu:
         return action
 
     def calculate_button_positions(self) -> tuple:
-        # x positions
         play_btn_x = self.midpoint_width - self.buttons_width / 2
-        exit_btn_x = play_btn_x
+        options_btn_x = self.midpoint_width - self.buttons_width / 2
+        exit_btn_x = self.midpoint_width - self.buttons_width / 2
 
-        # y positions
-        base_y = self.midpoint_height 
-        play_btn_y = base_y
-        exit_btn_y = play_btn_y + self.buttons_height + self.margin
+        play_btn_y = (
+            self.midpoint_height - self.margin - self.buttons_height / 2
+        )
+        options_btn_y = self.midpoint_height - self.buttons_height / 2
+        exit_btn_y = (
+            self.midpoint_height + self.margin - self.buttons_height / 2
+        )
 
         # Return the top-left corner of each button
         return (
             play_btn_x,
             play_btn_y,
+            options_btn_x,
+            options_btn_y,
             exit_btn_x,
             exit_btn_y,
         )
@@ -45,6 +51,8 @@ class PauseMenu:
         (
             play_btn_x,
             play_btn_y,
+            options_btn_x,
+            options_btn_y,
             exit_btn_x,
             exit_btn_y,
         ) = self.calculate_button_positions()
@@ -75,6 +83,23 @@ class PauseMenu:
             ),
             (self.buttons_width, self.buttons_height),
         )
+        # Options button
+        canvas.draw_image(
+            self.options_btn_img,
+            (
+                self.options_btn_img.get_width() / 2,
+                self.options_btn_img.get_height() / 2,
+            ),
+            (
+                self.options_btn_img.get_width(),
+                self.options_btn_img.get_height(),
+            ),
+            (
+                options_btn_x + self.buttons_width / 2,
+                options_btn_y + self.buttons_height / 2,
+            ),
+            (self.buttons_width, self.buttons_height),
+        )
         # Exit button
         canvas.draw_image(
             self.exit_btn_img,
@@ -96,6 +121,8 @@ class PauseMenu:
         (
             play_btn_x,
             play_btn_y,
+            options_btn_x,
+            options_btn_y,
             exit_btn_x,
             exit_btn_y,
         ) = self.calculate_button_positions()
@@ -107,6 +134,14 @@ class PauseMenu:
         ):
             print('play')
             return 'play'
+
+        # Options button
+        elif (
+            options_btn_x < x < options_btn_x + self.buttons_width
+            and options_btn_y < y < options_btn_y + self.buttons_height
+        ):
+            print('options')
+            return 'options'
 
         # Exit button
         elif (

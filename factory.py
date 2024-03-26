@@ -69,6 +69,7 @@ class FactoryHandler:
             if spawn_type != 'wave':   # regular spawn during normal gameplay
                 zombie = ZombieFactory.spawner()
                 zombies_list.append(zombie)
+                print('zombie spawned')
 
 
 class ZombieFactory:
@@ -99,7 +100,7 @@ class ZombieFactory:
 
     @staticmethod
     def gen_cooldown() -> float:
-        return ru(0.6, 1)
+        return rn(2, 6)
 
     @staticmethod
     def can_spawn() -> bool:
