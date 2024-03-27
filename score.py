@@ -45,9 +45,7 @@ class Score:
             SCORE_FONT,
         )
 
-    # dbg
-    def print_if_changed(self):
-        """Print the score if it has changed"""
-        if self.current_score != self.old_score:
-            print(f'Score: {self.current_score}')
-            self.old_score = self.current_score
+    def reset(self) -> None:
+        """Reset the score to 0"""
+        self.current_score = 0
+        self.old_score = 0

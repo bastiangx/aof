@@ -23,3 +23,8 @@ class Mouse:
     def update(self) -> None:
         if self.clicked:
             self.clicked = False
+
+    def disable(self) -> None:
+        self.clicked = False
+        self.last_position = [0, 0]
+

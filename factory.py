@@ -1,6 +1,6 @@
 from random import uniform as ru, choice as rc, randint as rn
 from config import CANVAS_WIDTH
-from zombies import Zombie
+from enemies import Enemy
 import time
 
 
@@ -128,12 +128,12 @@ class ZombieFactory:
         return cls.spawn_cooldown * random_factor
 
     @staticmethod
-    def spawner() -> Zombie:
+    def spawner() -> Enemy:
         y = ru(400, 1400) * -1
         x = ru(50, CANVAS_WIDTH - 50)
         velocity = ZombieFactory.gen_velocity_range()
 
-        return Zombie(x, y, velocity)
+        return Enemy(x, y, velocity)
 
 
 class WaveFactory:
@@ -146,7 +146,7 @@ class WaveFactory:
     last_adjustment_time = time.time()
     spawn_cooldown = 1
 
-    @staticmethod # override: no slow velocity
+    @staticmethod   # override: no slow velocity
     def gen_velocity_range() -> float:
         choice = rc(['higher', 'regular'])
         return {
@@ -183,10 +183,10 @@ class WaveFactory:
         return cls.spawn_cooldown * random_factor
 
     @staticmethod
-    def spawner() -> Zombie:
+    def spawner() -> Enemy:
         y = ru(300, 1000) * -1
         # override: closer spawn to screen and together
         x = ru(50, CANVAS_WIDTH - 50)
         velocity = WaveFactory.gen_velocity_range()
 
-        return Zombie(x, y, velocity)
+        return Enemy(x, y, velocity)

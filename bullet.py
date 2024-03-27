@@ -1,4 +1,4 @@
-from assets import BULLET_IMG
+from assets import GAME_BULLET
 from vector import Vector
 
 class Bullet:
@@ -13,7 +13,7 @@ class Bullet:
         self.velocity_modifier = 8
         self.velocity.normalize()
 
-        self.image = BULLET_IMG
+        self.image = GAME_BULLET
         self.width = 20
         self.height = 20
 

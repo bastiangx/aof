@@ -1,91 +1,130 @@
-from assets import PLAY_BTN, EXIT_BTN
-from config import CANVAS_WIDTH, CANVAS_HEIGHT
+from assets import BTN_PLAY, BTN_EXIT, BTN_MM, PAUSE_BANNER
+from jukebox import UI
+from config import CANVAS_WIDTH
 
+click_sound = UI()
 
 class PauseMenu:
     def __init__(self) -> None:
-        self.play_btn_img = PLAY_BTN
-        self.exit_btn_img = EXIT_BTN
+        self.banner = PAUSE_BANNER
+        self.play_btn = BTN_PLAY
+        self.exit_btn = BTN_EXIT
+        self.mm_btn = BTN_MM
 
-        self.buttons_width = 300
-        self.buttons_height = 150
-        self.margin = 20
+        self.buttons_width = self.play_btn.get_width()
+        self.buttons_height = self.play_btn.get_height()
 
-        self.midpoint_width = CANVAS_WIDTH // 2
-        self.midpoint_height = CANVAS_HEIGHT // 2
+        self.banner_width = self.banner.get_width()
+        self.banner_height = self.banner.get_height()
 
-    def handler(self, mouse: object) -> str:
-        action = None
+        self.margin_top = 260
+        self.margin_middle = 160
+        self.margin_button = 33
 
-        if mouse.clicked:
-            action = self.click(mouse.get_position())
-            mouse.clicked = False
+        self.base_x = CANVAS_WIDTH // 2
+        self.base_y = self.margin_top
 
-        return action
+    def calculate_banner_position(self) -> tuple:
+        return (
+            self.base_x,
+            self.base_y,
+        )
 
     def calculate_button_positions(self) -> tuple:
-        # x positions
-        play_btn_x = self.midpoint_width - self.buttons_width / 2
-        exit_btn_x = play_btn_x
+        # x position
+        base_x = self.base_x - self.buttons_width / 2
 
-        # y positions
-        base_y = self.midpoint_height 
+        play_btn_x = base_x
+        exit_btn_x = base_x
+        mm_btn_x = base_x
+
+        # y position
+        base_y = self.margin_top + self.margin_top
+
         play_btn_y = base_y
-        exit_btn_y = play_btn_y + self.buttons_height + self.margin
+        mm_btn_y = play_btn_y + self.buttons_height + self.margin_button
+        exit_btn_y = mm_btn_y + self.buttons_height + self.margin_button
 
-        # Return the top-left corner of each button
+        # return the top-left corner of each button
         return (
             play_btn_x,
             play_btn_y,
             exit_btn_x,
             exit_btn_y,
+            mm_btn_x,
+            mm_btn_y,
         )
 
     def render(self, canvas: object) -> None:
+        # banner position
+        (
+            banner_x,
+            banner_y,
+        ) = self.calculate_banner_position()
+
+        # buttons position
         (
             play_btn_x,
             play_btn_y,
             exit_btn_x,
             exit_btn_y,
+            mm_btn_x,
+            mm_btn_y,
         ) = self.calculate_button_positions()
 
-        # semi_transparent background
+        # darken overlay
         canvas.draw_polygon(
             [
                 (0, 0),
                 (CANVAS_WIDTH, 0),
-                (CANVAS_WIDTH, CANVAS_HEIGHT),
-                (0, CANVAS_HEIGHT),
+                (CANVAS_WIDTH, 800),
+                (0, 800),
             ],
             1,
             'Black',
-            'rgba(27, 21, 30, 0.7)',
+            'rgba(0, 0, 0, 0.7)',
         )
-        # Play button
+        # banner image
         canvas.draw_image(
-            self.play_btn_img,
+            self.banner,
+            (self.banner_width // 2, self.banner_height // 2),
+            (self.banner_width, self.banner_height),
+            (banner_x, banner_y),
+            (self.banner_width, self.banner_height),
+        )
+
+        # play button
+        canvas.draw_image(
+            self.play_btn,
+            (self.buttons_width // 2, self.buttons_height // 2),
+            (self.buttons_width, self.buttons_height),
             (
-                self.play_btn_img.get_width() / 2,
-                self.play_btn_img.get_height() / 2,
-            ),
-            (self.play_btn_img.get_width(), self.play_btn_img.get_height()),
-            (
-                play_btn_x + self.buttons_width / 2,
-                play_btn_y + self.buttons_height / 2,
+                play_btn_x + self.buttons_width // 2,
+                play_btn_y + self.buttons_height // 2,
             ),
             (self.buttons_width, self.buttons_height),
         )
-        # Exit button
+
+        # main menu button
         canvas.draw_image(
-            self.exit_btn_img,
+            self.mm_btn,
+            (self.buttons_width // 2, self.buttons_height // 2),
+            (self.buttons_width, self.buttons_height),
             (
-                self.exit_btn_img.get_width() / 2,
-                self.exit_btn_img.get_height() / 2,
+                mm_btn_x + self.buttons_width // 2,
+                mm_btn_y + self.buttons_height // 2,
             ),
-            (self.exit_btn_img.get_width(), self.exit_btn_img.get_height()),
+            (self.buttons_width, self.buttons_height),
+        )
+
+        # exit button
+        canvas.draw_image(
+            self.exit_btn,
+            (self.buttons_width // 2, self.buttons_height // 2),
+            (self.buttons_width, self.buttons_height),
             (
-                exit_btn_x + self.buttons_width / 2,
-                exit_btn_y + self.buttons_height / 2,
+                exit_btn_x + self.buttons_width // 2,
+                exit_btn_y + self.buttons_height // 2,
             ),
             (self.buttons_width, self.buttons_height),
         )
@@ -98,6 +137,8 @@ class PauseMenu:
             play_btn_y,
             exit_btn_x,
             exit_btn_y,
+            mm_btn_x,
+            mm_btn_y,
         ) = self.calculate_button_positions()
 
         # Play button
@@ -105,16 +146,32 @@ class PauseMenu:
             play_btn_x < x < play_btn_x + self.buttons_width
             and play_btn_y < y < play_btn_y + self.buttons_height
         ):
-            print('play')
+            click_sound.play()
             return 'play'
+
+        # Main menu button
+        if (
+            mm_btn_x < x < mm_btn_x + self.buttons_width
+            and mm_btn_y < y < mm_btn_y + self.buttons_height
+        ):
+            click_sound.play_back()
+            return 'main_menu'
 
         # Exit button
         elif (
             exit_btn_x < x < exit_btn_x + self.buttons_width
             and exit_btn_y < y < exit_btn_y + self.buttons_height
         ):
-            print('exit')
             return 'exit'
 
         else:
             return None
+
+    def handler(self, mouse: object) -> str:
+        action = None
+
+        if mouse.clicked:
+            action = self.click(mouse.get_position())
+            mouse.clicked = False
+
+        return action

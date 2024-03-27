@@ -1,5 +1,8 @@
-from assets import PLAY_BTN, EXIT_BTN
+from assets import WASTED_BANNER, WASTED_BG, BTN_PLAY, BTN_EXIT, BTN_MM
 from config import CANVAS_WIDTH, CANVAS_HEIGHT
+from jukebox import UI
+
+sound_click = UI()
 
 
 class WastedMenu:
@@ -10,121 +13,173 @@ class WastedMenu:
     """
 
     def __init__(self) -> None:
-        self.play_btn_img = PLAY_BTN
-        self.exit_btn_img = EXIT_BTN
+        self.banner = WASTED_BANNER
+        self.bg = WASTED_BG
+        self.play_btn = BTN_PLAY
+        self.exit_btn = BTN_EXIT
+        self.mm_btn = BTN_MM
 
-        self.buttons_width = 200
-        self.buttons_height = 100
-        self.margin = 20
+        self.banner_width = self.banner.get_width()
+        self.banner_height = self.banner.get_height()
 
-        self.midpoint_width = CANVAS_WIDTH // 2
-        self.midpoint_height = CANVAS_HEIGHT // 2
+        self.buttons_width = self.play_btn.get_width()
+        self.buttons_height = self.play_btn.get_height()
 
-    # def handler(self, mouse: object) -> str:
-    def handler(self, mouse: object) -> str:
-        """
-        interface for other classes to call the click method
-        return None if no click is present
-        """
-        action = None
+        self.margin_top = 260
+        self.margin_middle = 160
+        self.margin_button = 33
 
-        if mouse.clicked:
-            action = self.click(mouse.get_position())
-            mouse.clicked = False
+        self.base_x = CANVAS_WIDTH // 2
+        self.base_y = self.margin_top
 
-        return action
+    def calculate_banner_position(self) -> tuple:
+        return (
+            self.base_x,
+            self.base_y,
+        )
 
     def calculate_button_positions(self) -> tuple:
-        """
-        Calculate the x and y positions of the buttons_width
-        return the top-left corner of each button for click detection
-        """
-        # x positions
-        play_btn_x = self.midpoint_width - self.buttons_width / 2
-        exit_btn_x = play_btn_x
+        base_x = CANVAS_WIDTH / 2
 
-        # y positions
-        base_y = self.midpoint_height + self.margin + self.buttons_height
+        play_btn_x = base_x
+        exit_btn_x = base_x
+        mm_btn_x = base_x
+
+        base_y = self.margin_top * 2.15
 
         play_btn_y = base_y
-        exit_btn_y = play_btn_y + self.buttons_height + self.margin
+        mm_btn_y = play_btn_y + self.buttons_height + self.margin_button
+        exit_btn_y = mm_btn_y + self.buttons_height + self.margin_button
 
-        # Return the top-left corner of each button
         return (
             play_btn_x,
             play_btn_y,
             exit_btn_x,
             exit_btn_y,
+            mm_btn_x,
+            mm_btn_y,
         )
 
     def render(self, canvas: object) -> None:
-        """
-        Render the buttons on canvas
-        """
+        (
+            banner_x,
+            banner_y,
+        ) = self.calculate_banner_position()
+
         (
             play_btn_x,
             play_btn_y,
             exit_btn_x,
             exit_btn_y,
+            mm_btn_x,
+            mm_btn_y,
         ) = self.calculate_button_positions()
 
-        # Play button
+        # background
         canvas.draw_image(
-            self.play_btn_img,
+            self.bg,
+            (self.bg.get_width() / 2, self.bg.get_height() / 2),
+            (self.bg.get_width(), self.bg.get_height()),
+            (CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2),
+            (CANVAS_WIDTH, CANVAS_HEIGHT),
+        )
+
+        # banner image
+        canvas.draw_image(
+            self.banner,
+            (self.banner_width // 2, self.banner_height // 2),
+            (self.banner_width, self.banner_height),
             (
-                self.play_btn_img.get_width() / 2,
-                self.play_btn_img.get_height() / 2,
+                banner_x,
+                banner_y,
             ),
-            (self.play_btn_img.get_width(), self.play_btn_img.get_height()),
+            (self.banner_width, self.banner_height),
+        )
+
+        # buttons
+        canvas.draw_image(
+            self.play_btn,
+            (self.buttons_width // 2, self.buttons_height // 2),
+            (self.buttons_width, self.buttons_height),
             (
-                play_btn_x + self.buttons_width / 2,
-                play_btn_y + self.buttons_height / 2,
+                play_btn_x,
+                play_btn_y,
             ),
             (self.buttons_width, self.buttons_height),
         )
 
-        # Exit button
         canvas.draw_image(
-            self.exit_btn_img,
+            self.exit_btn,
+            (self.buttons_width // 2, self.buttons_height // 2),
+            (self.buttons_width, self.buttons_height),
             (
-                self.exit_btn_img.get_width() / 2,
-                self.exit_btn_img.get_height() / 2,
+                exit_btn_x,
+                exit_btn_y,
             ),
-            (self.exit_btn_img.get_width(), self.exit_btn_img.get_height()),
+            (self.buttons_width, self.buttons_height),
+        )
+
+        canvas.draw_image(
+            self.mm_btn,
+            (self.buttons_width // 2, self.buttons_height // 2),
+            (self.buttons_width, self.buttons_height),
             (
-                exit_btn_x + self.buttons_width / 2,
-                exit_btn_y + self.buttons_height / 2,
+                mm_btn_x,
+                mm_btn_y,
             ),
             (self.buttons_width, self.buttons_height),
         )
 
     def click(self, position: tuple) -> str:
-        """
-        Detection based on the position of the mouse click on canvas
-        returns the action as a str for handler to use
-        """
         x, y = position
-        # hitbox check around the buttons
+
         (
             play_btn_x,
             play_btn_y,
             exit_btn_x,
             exit_btn_y,
+            mm_btn_x,
+            mm_btn_y,
         ) = self.calculate_button_positions()
 
-        # Play button
+        # play button
         if (
-            play_btn_x < x < play_btn_x + self.buttons_width
-            and play_btn_y < y < play_btn_y + self.buttons_height
+            x >= play_btn_x - self.buttons_width // 2
+            and x <= play_btn_x + self.buttons_width // 2
+            and y >= play_btn_y - self.buttons_height // 2
+            and y <= play_btn_y + self.buttons_height // 2
         ):
+            sound_click.play()
             return 'play'
 
-        # Exit button
+        # mm button
+        if (
+            x >= mm_btn_x - self.buttons_width // 2
+            and x <= mm_btn_x + self.buttons_width // 2
+            and y >= mm_btn_y - self.buttons_height // 2
+            and y <= mm_btn_y + self.buttons_height // 2
+        ):
+            sound_click.play_back()
+            return 'mm'
+
+        # exit button
         elif (
-            exit_btn_x < x < exit_btn_x + self.buttons_width
-            and exit_btn_y < y < exit_btn_y + self.buttons_height
+            x >= exit_btn_x - self.buttons_width // 2
+            and x <= exit_btn_x + self.buttons_width // 2
+            and y >= exit_btn_y - self.buttons_height // 2
+            and y <= exit_btn_y + self.buttons_height // 2
         ):
             return 'exit'
 
-        else:
-            return None
+        return None
+
+    def handler(self, mouse: object) -> str:
+        """
+        Interface for state-machines to call the click method.
+        """
+        action = None
+
+        if mouse.clicked:
+            action = self.click(mouse.get_position())
+            mouse.update()
+        return action
