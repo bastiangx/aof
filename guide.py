@@ -2,7 +2,7 @@ from assets import GUIDE_BANNER, GUIDE_BG, GUIDE_NUMBERS
 from config import CANVAS_WIDTH, CANVAS_HEIGHT
 
 counter = 0
-frames = 5 # 480  # 5 seconds
+frames = 480  # 5 seconds
 
 
 class Guide:

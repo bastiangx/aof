@@ -22,7 +22,7 @@ class FactoryHandler:
 
     @staticmethod
     def score_check(score: int) -> str:
-        if 8 <= score <= 18:
+        if 30 <= score <= 40:
             return str('wave')
         return str('regular')
 
@@ -99,7 +99,7 @@ class ZombieFactory:
 
     @staticmethod
     def gen_cooldown() -> float:
-        return ru(0.6, 1)
+        return ru(1, 3)
 
     @staticmethod
     def can_spawn() -> bool:
@@ -156,7 +156,7 @@ class WaveFactory:
 
     @staticmethod
     def gen_cooldown() -> float:
-        return rn(2, 3)
+        return rn(3, 4)
 
     @staticmethod
     def can_spawn() -> bool:
