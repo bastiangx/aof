@@ -9,7 +9,7 @@
 
 
  <p align="center">
-     `SimpleGUICS2Pygame`-based game written in Python.<br />
+     SimpleGUICS2Pygame-based game written in Python.<br />
      Fun top-down shooter with simple graphics and gameplay.<br />
 </p>
 
@@ -205,4 +205,3 @@ My amazing team members who made coding this game a fun experience:
 - [Jasmin](https://github.com/jasmin192004)
 - [Imran](https://github.com/imranslab12)
 - [Sienna](https://github.com/siennadarya)
-````
