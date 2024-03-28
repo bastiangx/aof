@@ -1,5 +1,8 @@
 from config import CANVAS_WIDTH, CANVAS_HEIGHT
+from jukebox import SoundEffect
 import time
+
+sound = SoundEffect()
 
 
 class Collision:
@@ -12,7 +15,6 @@ class Collision:
     bullet_to_wall: check if bullets are off the screen and remove them
     zombie_to_base: check if zombies have reached the bottom of screen and remove them
     is_collision: main collision check function
-    reset_cache: clear the cache every 11 levels
     start: calls all the collision methods
 
     Attributes:
@@ -22,20 +24,23 @@ class Collision:
     """
 
     def __init__(self) -> None:
-        # cache the heavy collision checks to massively improve perf
+        # cache the heavy collision checks in a dict
         self.cache = {}
-        self.cahe_cleared = False
-        self.canvas_width = CANVAS_WIDTH
-        self.canvas_height = CANVAS_HEIGHT
+        self.cache_cleared = False
 
         self.bullets_to_remove = []
         self.zombies_to_remove = []
 
+        self.damage_PZ = 6  # for player to zombie collision
+        self.damage_BZ = 50  # for bullet to zombie collision
+        self.damage_ZB = 12  # for zombie to base collision
+
         # for score tracking
-        self.zombies_killed = 0
+        self.zombies_killed: int = 0
 
     def player_to_zombie(self, player: object, zombies_list) -> None:
         player_hitbox = player.get_hitbox()
+
         # clear the list of zombies to remove correct instances
         self.zombies_to_remove.clear()
 
@@ -46,13 +51,17 @@ class Collision:
             key = (tuple(player_hitbox), tuple(zombie_hitbox))
             if key in self.cache:
                 if self.cache[key]:
+                    sound.play_player_hit()
                     self.zombies_to_remove.append(zombie)
+                    player.take_damage(self.damage_PZ)
 
             else:
                 collision = self.is_collision(player_hitbox, zombie_hitbox)
                 self.cache[key] = collision
                 if collision:
+                    sound.play_player_hit()
                     self.zombies_to_remove.append(zombie)
+                    player.take_damage(self.damage_PZ)
 
         for zombie in self.zombies_to_remove:
             zombies_list.remove(zombie)
@@ -67,13 +76,21 @@ class Collision:
             bullet_hitbox = bullet.get_hitbox()
             for zombie in zombies_list:
                 zombie_hitbox = zombie.get_hitbox()
+
                 key = (tuple(bullet_hitbox), tuple(zombie_hitbox))
                 if key in self.cache:
                     if self.cache[key]:
                         try:
+                            sound.play_zombie_hit()
+                            zombie.take_damage(self.damage_BZ)
                             self.bullets_to_remove.append(bullet)
-                            self.zombies_to_remove.append(zombie)
-                            self.zombies_killed += 1
+
+                            # only remove zombie if it's wasted
+                            if zombie.wasted():
+                                sound.play_zombie_wasted()
+                                self.zombies_to_remove.append(zombie)
+                                self.zombies_killed += 1
+
                         except ValueError:
                             print('Two bullets hit the same zombie')
 
@@ -82,9 +99,15 @@ class Collision:
                     self.cache[key] = collision
                     if collision:
                         try:
+                            sound.play_zombie_hit()
+                            zombie.take_damage(self.damage_BZ)
                             self.bullets_to_remove.append(bullet)
-                            self.zombies_to_remove.append(zombie)
-                            self.zombies_killed += 1
+
+                            if zombie.wasted():
+                                sound.play_zombie_wasted()
+                                self.zombies_to_remove.append(zombie)
+                                self.zombies_killed += 1
+
                         except ValueError:
                             print('Two bullets hit the same zombie')
 
@@ -100,6 +123,22 @@ class Collision:
             except ValueError:
                 print('Two bullets hit the same zombie')
 
+    # zomb reaching bottom of screen
+    def zombie_to_base(self, zombies_list: list, player: object) -> None:
+        self.zombies_to_remove.clear()
+        offset = 99  # 99px from top of screen -> map related
+
+        for zombie in zombies_list:
+            zombie_hitbox = zombie.get_hitbox()
+            # if zombie_hitbox[1] + zombie_hitbox[3] > CANVAS_HEIGHT:
+            if zombie_hitbox[1] + zombie_hitbox[3] < offset:
+                sound.play_player_hit()
+                player.take_damage(self.damage_ZB)
+                self.zombies_to_remove.append(zombie)
+
+        for zombie in self.zombies_to_remove:
+            zombies_list.remove(zombie)
+
     def bullet_to_wall(self, bullets_list: list) -> None:
         self.bullets_to_remove.clear()
 
@@ -108,30 +147,16 @@ class Collision:
             # 10px as buffer off the screen
             if (
                 bullet_hitbox[0] < -10
-                or bullet_hitbox[0] + bullet_hitbox[2] > self.canvas_width + 10
+                or bullet_hitbox[0] + bullet_hitbox[2] > CANVAS_WIDTH + 10
                 or bullet_hitbox[1] < -10
-                or bullet_hitbox[1] + bullet_hitbox[3]
-                > self.canvas_height + 10
+                or bullet_hitbox[1] + bullet_hitbox[3] > CANVAS_HEIGHT + 10
             ):
                 self.bullets_to_remove.append(bullet)
 
         for bullet in self.bullets_to_remove:
             bullets_list.remove(bullet)
 
-    # zomb reaching bottom of screen
-    def zombie_to_base(self, zombies_list: list) -> None:
-        self.zombies_to_remove.clear()
-
-        for zombie in zombies_list:
-            zombie_hitbox = zombie.get_hitbox()
-            if zombie_hitbox[1] + zombie_hitbox[3] > self.canvas_height:
-                self.zombies_to_remove.append(zombie)
-
-        for zombie in self.zombies_to_remove:
-            zombies_list.remove(zombie)
-
-        # main collision check func
-
+    # main collision check func
     def is_collision(self, hitbox1: list, hitbox2: list) -> bool:
         return (  # check if corners of hitbox1 are inside hitbox2
             hitbox1[0] < hitbox2[0] + hitbox2[2]
@@ -141,25 +166,30 @@ class Collision:
         )
 
     def reset_cache(self) -> None:
-        # clear every 120 seconds
-        # maintainance - important to reset
+        """
+        ------
+        maintainance
+        ------
+            IMPORTANT TO RESET CACHE
+            clear every 120 seconds
+        """
         current_time = time.time()
-        if current_time % 120 == 0 and not self.cahe_cleared:
+        if current_time % 120 == 0 and not self.cache_cleared:
             self.cache.clear()
-            self.cahe_cleared = True
+            self.cache_cleared = True
 
         elif current_time % 60 != 0:
-            self.cahe_cleared = False
+            self.cache_cleared = False
 
     def start(
         self, player: object, zombies_list: list, bullets_list: list
     ) -> None:
         """
         calls all the collision methods
-        housekeeping
+            housekeeping
         """
         self.player_to_zombie(player, zombies_list)
         self.bullet_to_zombie(bullets_list, zombies_list)
         self.bullet_to_wall(bullets_list)
-        self.zombie_to_base(zombies_list)
+        self.zombie_to_base(zombies_list, player)
         self.reset_cache()

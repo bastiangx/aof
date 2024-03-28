@@ -1,5 +1,6 @@
-from assets import BULLET_IMG
+from assets import GAME_BULLET
 from vector import Vector
+
 
 class Bullet:
     """
@@ -13,15 +14,25 @@ class Bullet:
         self.velocity_modifier = 8
         self.velocity.normalize()
 
-        self.image = BULLET_IMG
-        self.width = 20
-        self.height = 20
+        self.image = GAME_BULLET
+        self.width = 22
+        self.height = 22
+
+        self.frame_height = self.image.get_height() // 2
+        self.frame_duration = 10
+        self.frame_index = 0
+        self.frame_timer = 0
 
     def draw(self, canvas: object) -> None:
+        # current frame's center
+        frame_center_y = (self.frame_index + 0.5) * self.frame_height
+        frame_center = (self.image.get_width() // 2, frame_center_y) 
+        frame_size = (self.image.get_width(), self.frame_height) # final frame size
+
         canvas.draw_image(
             self.image,
-            (self.image.get_width() / 2, self.image.get_height() / 2),
-            (self.image.get_width(), self.image.get_height()),
+            frame_center,
+            frame_size,
             (self.x, self.y),
             (self.width, self.height),
         )
@@ -30,6 +41,11 @@ class Bullet:
     def update(self) -> None:
         self.x += self.velocity.x
         self.y += self.velocity.y
+
+        self.frame_timer += 1
+        if self.frame_timer >= self.frame_duration:
+            self.frame_timer = 0
+            self.frame_index = (self.frame_index + 1) % 2
 
     def get_hitbox(self) -> tuple:
         return (self.x, self.y, self.width, self.height)

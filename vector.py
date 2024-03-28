@@ -1,7 +1,10 @@
 import math
 
-# The Vector class
+
 class Vector:
+    """
+    utility class for 2D vectors
+    """
 
     # Initialiser
     def __init__(self, x=0, y=0):
@@ -10,7 +13,7 @@ class Vector:
 
     # Returns a string representation of the vector
     def __str__(self):
-        return "(" + str(self.x) + "," + str(self.y) + ")"
+        return '(' + str(self.x) + ',' + str(self.y) + ')'
 
     # Tests the equality of this vector and another
     def __eq__(self, other):
@@ -65,7 +68,7 @@ class Vector:
 
     # Divides the vector by a scalar
     def divide(self, k):
-        return self.multiply(1/k)
+        return self.multiply(1 / k)
 
     def __truediv__(self, k):
         return self.copy().divide(k)
@@ -93,7 +96,7 @@ class Vector:
     # Reflect this vector on a normal
     def reflect(self, normal):
         n = normal.copy()
-        n.multiply(2*self.dot(normal))
+        n.multiply(2 * self.dot(normal))
         self.subtract(n)
         return self
 
@@ -117,10 +120,8 @@ class Vector:
     def rotate(self, theta):
         theta_rad = theta / 180 * math.pi
         return self.rotate_rad(theta_rad)
-    
+
     # project the vector onto a given vector
     def get_proj(self, vec):
         unit = vec.get_normalized()
         return unit.multiply(self.dot(unit))
-        
-        

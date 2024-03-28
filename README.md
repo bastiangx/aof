@@ -1,92 +1,193 @@
-# Attack on Farm
-
-###### this branch: **has_loops**
----
-
-## New: App (State Machine)
-The game is now booted from 'app.py' file instead of game.py. The app file is responsible for managing the game states and the game loop.
-#### State Machine
-inside of app, the state machine manages switching between the main_menu, gameplay, etc.
-It is responsible to make new instances of game upon reset and render it.
-
-####  main while loop
-the simplegui draw calss and everything else is now inside a main while loop. if while loop chain is broken, the game exits.
+source code for SimpleGUICS2Pygame-based shooter.
+Fun top-down pixel-art with simple graphics and gameplay.
 
 ---
 
-## New: Menus (main-menu, pause-menu)
-#### MainMenu
-is always the first state of the game. it is responsible for showing the game title and the start button. it also has a quit button to exit the game.
-its a copy of PauseMenu except the buttons here are lowered and are smaller.
+## 🐍 Getting Started
 
-#### PauseMenu
-pauses all movement of entities, calls the buttons, renders them and darkens the background. it also has a quit button to exit the game.
-Handles click buttons to either resume or quit the game.
+### Prerequisites
 
----
+- ##### Python3
 
-## Refactored: Gameplay
-game.py and levels.py are no more
-
-#### Render:
-handles rendering and interaction of all entities in the game.
-
----
-## Added: Score display (skeleton)
-Super skeleton of showing current score on top right of screen.
-functional yet needs to be improved.
-
----
-
-### How to run the game now?
-simply instead of running game.py, run app.py
-```bash
-python3 app.py
-```
-or 
-```bash
-python app.py
-```
+  You need Python3 to run this game at this point.
 
 <details>
-<summary> How to Run the game file </summary>
+<summary>Windows</summary>
+Visit [here](https://www.python.org/downloads/windows/) and download the latest version of Python3.
+Follow the full instructions.
+</details>
 
-#### Running the game
+<details>
+<summary>macOS</summary>
+Visit [here](https://www.python.org/downloads/mac-osx/) and download the latest version of Python3.
+Follow the full instructions.
+</details>
 
-To run the game, you need to have python installed on your machine. You can download python from [here](https://www.python.org/downloads/). Once you have python installed, you can run the game by running the following command in the terminal.
-
-```bash
-python3 app.py
-```
-
-#### Any dependencies?
-
-Yes, The game uses the simplegui library. An older version to be exact. You can install it by running the following command in the terminal.
-All other dependencies as of 5 March, 2024 are included in the standard python3 library.
-
-if you are using **python 3.x**
+<details>
+<summary>Ubuntu</summary>
 
 ```bash
-pip3 install SimpleGUICS2Pygame
+sudo apt update
+sudo apt install python3
 ```
 
-if you are using **python 2.x**
+````
+
+</details>
+
+<details>
+<summary>Others</summary>
+Visit [here](https://www.python.org/downloads/) and download the latest version of Python3.
+Follow the full instructions.
+</details>
+
+- ##### SimpleGUICS2Pygame
+
+  This game uses SimpleGUICS2Pygame as its API for graphics and input.
+  You can simply install it by running the following command:
 
 ```bash
 pip install SimpleGUICS2Pygame
 ```
 
-#### What is sg in the code?
+or
 
-**sg** is an alias for the simplegui library. It is used to make the code more readable and easier to write. You can find the alias at the top of the game.py file.
-it is defined as follows:
-
-```python
-from SimpleGUICS2Pygame import simpleguics2pygame as sg
+```bash
+pip3 install SimpleGUICS2Pygame
 ```
 
-#### Where is the binary (.exe)?
+or if you have downloaded the repository, you can install all the requirements by running:
 
-The game is unfinished and is still in development. There is no binary available for the game yet.
+```bash
+# in the root dir of the repo
+pip install -r requirements.txt
+```
 
-</details>
+if none of the above solutions works, visit [here](https://pypi.org/project/SimpleGUICS2Pygame/) and follow the instructions for your OS.
+
+---
+
+## 👾 Running the game
+
+Navigate to the root directory of the repository and run the following command in your terminal:
+
+```bash
+python app.py
+```
+
+or
+
+```bash
+# if python3 installed
+python3 app.py
+```
+
+The directory structure should look like this:
+
+```markdown
+.
+├── README.md
+├── app.py
+├── requirements.txt
+├── ...
+└── assets/
+   ├── sprite/
+   ├── audio/
+   └── ...
+```
+
+**`app.py` is the main file that runs the game.** - has the main game loop -> simplegui API calls - has the main state machine
+
+---
+
+## 🎮 Controls
+
+#### Movement
+
+- `W` or `↑` | Move up
+- `A` or `←` | Move left
+- `S` or `↓` | Move down
+- `D` or `→` | Move right
+
+#### Shooting
+
+- `mouse left click` | Shoot
+
+---
+
+## 🌲 Structure
+
+```markdown
+.
+├── app.py -> main loop / state machine
+├── assets.py -> loads all assets into memory
+├── bullet.py -> bullet rendering and movement
+├── collision.py -> collision detection for all entities
+├── config.py -> game configuration and constants
+├── enemies.py -> enemy rendering and movement
+├── factory.py -> entity factory / continuous entity generation
+├── gameplay.py -> main gameplay loop and logic / calls all relevant class instances
+├── guide.py -> player guide / instructions before starting the game
+├── jukebox.py -> audio player / plays background music and sound effects
+├── main_menu.py -> main menu / game start screen
+├── mouse.py -> mouse click handler
+├── pause_menu.py -> renders pause menu
+├── player.py -> player rendering and movement
+├── score.py -> score rendering and updating
+├── shoot.py -> player shooting mechanism and cooldown
+├── splash.py -> splash screen / opening screen
+├── title.py -> game title / game name
+├── user_input.py -> keyboard input handler
+├── vector.py -> utility class for vector operations
+├── wasted_menu.py -> renders game over screen
+├
+├── assets/ -> all game assets
+  ├── sprite/
+  ├── audio/
+  └── ...
+```
+---
+## 🐞 Known Issues
+
+The SimpleGUICS2Pygame API is a buggy and outdated/unspported repo, causing some issues with the game. The game may not run as expected on some systems.
+These issues are mostly related to the API itself and not the game code.
+Some of the bugs cannot be patched since our project requirements prohibit us from using other APIs.
+
+#### ‼️ Audio Device
+
+The API requires an audio device to be present on the system. If the system does not have an audio device, the game will not run.
+This does **not** mean that the system has to be unmuted; it just needs to have an audio device present.
+
+#### Sounds and Music
+
+- Rapidly shooting will not play the sound effect upon clicking.
+- The background music stops playing after a while.
+- Any sound effect being played gets in a queue and will not play simultaneously with other sounds.
+
+**Planned solution:** Alternative audio API
+
+#### Graphics
+
+- The scaling system is somewhat random and broken; depending on the system, the game may not scale properly. **Unpatchable**
+- Resizing the game window is not supported. **Unpatchable**
+
+---
+
+#### Binary Distribution
+
+The `.exe` file will be available soon.
+
+---
+
+## 📝 License
+
+This project is for demonstration purposes only and is not licensed for commercial use or any distribution.
+
+## 🎉 Acknowledgements
+
+My amazing team members who made coding this game a fun experience:
+
+- [Jasmin](https://github.com/jasmin192004)
+- [Imran](https://github.com/imranslab12)
+- [Sienna](https://github.com/siennadarya)
+````

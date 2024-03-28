@@ -1,136 +1,144 @@
-"""
-Main gameplay logic class
-Handles game rendering and all interactions
-"""
 # logic/factories imports
-from zombies_factory import ZombieFactory, WaveFactory, FactoryHandler
+from factory import ZombieFactory, WaveFactory, FactoryHandler
+from config import CANVAS_WIDTH, CANVAS_HEIGHT
+from jukebox import SoundEffect, UI
 from collision import Collision
-
-import sys
+from assets import GAME_BG
 
 # objects/entities imports
 from pause_menu import PauseMenu
-from bullet import Bullet
 from player import Player
+from bullet import Bullet
 from shoot import Shoot
 from score import Score
 
-# player initialization
-player = Player()
-
-# logic system initialization
-pause_menu = PauseMenu()
-collision = Collision()
-shoot = Shoot()
-score = Score()
-
-# list instance initialization
-bullets_list = []
-zombies_list = []
-
-# score incrementer initialization
-last_zombie_killed = 0
-
-# pause toggle variable
-pause_pressed = False
-
-# timers initialization
-ZombieFactory.spawn_cooldown = ZombieFactory().gen_cooldown()
-WaveFactory.spawn_cooldown = WaveFactory().gen_cooldown()
+sound = SoundEffect()
+sound_click = UI()
 
 
 class Gameplay:
-    @staticmethod
-    def reset():
+    """
+    Handles game rendering and all interactions
+    """
+
+    def __init__(self) -> None:
+        self.reset()
+
+    def reset(self):
         """
-        on new game, reset all values
+        On new game, reset all entities, flags, and variables.
         """
-        global zombies_list, bullets_list, last_zombie_killed, pause_pressed
+        self.player = Player(hp=100)
+        self.pause_menu = PauseMenu()
+        self.collision = Collision()
+        self.shoot = Shoot()
+        self.score = Score()
 
-        zombies_list.clear()
-        bullets_list.clear()
-        score.current_score = 0
+        self.bg = GAME_BG
 
-    @staticmethod
-    def render(canvas: object, kbd: object, mouse: object) -> None:
-        """
-        draw and update all gameplay entities
-        """
-        global zombies_list, bullets_list, last_zombie_killed, pause_pressed
+        # Lists for managing dynamic game entities
+        self.bullets_list = []
+        self.zombies_list = []
 
-        # draw loops (zombie.py, bullet.py)
-        for zombie in zombies_list:
-            zombie.draw(canvas)
-            if not pause_pressed:
-                zombie.update()
+        # Additional game state variables
+        self.last_zombie_killed = 0
+        self.pause_pressed = False
+        ZombieFactory.spawn_cooldown = ZombieFactory().gen_cooldown()
+        WaveFactory.spawn_cooldown = WaveFactory().gen_cooldown()
 
-        for bullet in bullets_list:
-            bullet.draw(canvas)
-            if not pause_pressed:
-                bullet.update()
+    # handle puasing, wasted, and main menu actions for sm
+    def handler(self, mouse: object, canvas) -> str:
+        if self.player.wasted():
+            self.reset()
+            return 'wasted'
 
-        # player update (player.py)
-        player.draw(canvas)
-        if not pause_pressed:
-            player.update(kbd)
+        if self.pause_pressed:
+            self.pause_menu.render(canvas)
 
-        # spawn zombies and waves (factory.py)
-        if not pause_pressed:
-            FactoryHandler.spawn_zombies(
-                score.get_current_score(), zombies_list
-            )
-
-        # collision call
-        collision.start(player, zombies_list, bullets_list)
-
-        # shooting system (shoot.py)
-        if not pause_pressed:
-            shoot.fire_rate()   # reset cooldown
-
-        if mouse.clicked and shoot.fire_rate() == 0:
-            if not pause_pressed:
-                bullet = Bullet(x=player.x, y=player.y)
-                bullets_list.append(bullet)
-
-                shoot.start(bullet, [player.x, player.y], mouse.get_position())
-
-                mouse.clicked = False   # reset click
-
-        # score update from bullet collision
-        zombies_killed = collision.zombies_killed
-        zombies_killed_delta = zombies_killed - last_zombie_killed
-
-        # score rendering
-        score.render(canvas)
-        # score system, if zombies are killed by bullets
-        if zombies_killed_delta > 0:
-            score.increment_score(zombies_killed_delta)
-            last_zombie_killed = zombies_killed
-            print(f'Score: {score.get_current_score()}')
-
-            # pause menu toggle
-        if kbd.pause and not pause_pressed:
-            # toggle pause, press again to unpause
-            print('pause toggled')
-            pause_pressed = True
-
-        # pause menu rendering
-        if pause_pressed:
-            pause_menu.render(canvas)
-            action = pause_menu.handler(mouse)
-
+            action = self.pause_menu.handler(mouse)
             if action == 'play':
-                pause_pressed = False
-                print('play')
+                self.pause_pressed = False
+                return 'play'
 
-            elif action == 'options':
-                print('options')
+            elif action == 'main_menu':
+                self.reset()
+                return 'main_menu'
 
             elif action == 'exit':
-                print('exit')
-                sys.exit()
+                return 'exit'
 
-            else:
-                pass
+        mouse.clicked = False
+        return 'continue'
 
-            mouse.clicked = False   # reset click
+    def render(self, canvas: object, kbd: object, mouse: object) -> None:
+        # background rendering
+        canvas.draw_image(
+            self.bg,
+            (CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2),
+            (CANVAS_WIDTH, CANVAS_HEIGHT),
+            (CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2),
+            (CANVAS_WIDTH, CANVAS_HEIGHT),
+        )
+
+        # draw loops (zombie.py, bullet.py)
+        for zombie in self.zombies_list:
+            zombie.draw(canvas)
+            if not self.pause_pressed:
+                zombie.update()
+
+        for bullet in self.bullets_list:
+            bullet.draw(canvas)
+            if not self.pause_pressed:
+                bullet.update()
+
+        # player rendering & animations
+        if not self.pause_pressed:
+            self.player.update(kbd, canvas)
+
+        self.player.draw_gui(canvas)
+
+        # spawn zombies and waves (factory.py)
+        if not self.pause_pressed and not self.player.wasted():
+            FactoryHandler.spawn_zombies(
+                self.score.get_current_score(), self.zombies_list
+            )
+
+        # collision call - all checks
+        self.collision.start(self.player, self.zombies_list, self.bullets_list)
+
+        # shooting system (shoot.py)
+        if not self.pause_pressed:
+            self.shoot.fire_rate()   # reset cooldown
+
+        if mouse.clicked and self.shoot.fire_rate() == 0:
+            if not self.pause_pressed and not self.player.wasted():
+                bullet = Bullet(x=self.player.x, y=self.player.y)
+                self.bullets_list.append(bullet)
+
+                self.shoot.start(
+                    bullet,
+                    [self.player.x, self.player.y],
+                    mouse.get_position(),
+                )
+
+                sound.play_gunshot()
+                mouse.update()
+                mouse.clicked = False   # reset click
+
+        # score update -> from bullet collision
+        zombies_killed = self.collision.zombies_killed
+        zombies_killed_delta = zombies_killed - self.last_zombie_killed
+
+        # score rendering
+        if not self.player.wasted():
+            self.score.render(canvas)
+
+        # score system, if zombies are killed by bullets
+        if zombies_killed_delta > 0:
+            self.score.increment_score(zombies_killed_delta)
+            self.last_zombie_killed = zombies_killed
+
+        # pause menu toggle
+        if kbd.pause and not self.pause_pressed:
+            # toggle pause, press again to unpause
+            self.pause_pressed = True

@@ -1,10 +1,19 @@
 from SimpleGUICS2Pygame.simpleguics2pygame import KEY_MAP as map
-import sys
 
 
 class Keyboard:
     """
     Handles all keyboard input
+
+    -----------
+    Known Issues
+    -----------
+        * No support for Escape key
+        * Random and non registered keys impact the game
+
+        SimpleGUICS2Pygame does not support all keys -> no escape key
+        unmaintained library -> any keys can affect the runtime -> no fix
+
     """
 
     def __init__(self) -> None:
@@ -13,9 +22,6 @@ class Keyboard:
         self.up = False
         self.down = False
         self.pause = False
-
-        # dbg / quit app quick / remove later
-        self.z = False
 
     def keydown(self, key: int) -> None:
         """
@@ -35,11 +41,6 @@ class Keyboard:
 
         if key == map['p']:
             self.pause = True
-
-            # dbg / quit app quick / remove later
-        if key == map['z']:
-            self.z = True
-            sys.exit()
 
     def keyup(self, key: int) -> None:
         """
