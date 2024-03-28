@@ -44,6 +44,8 @@ Follow the full instructions.
 <details>
 <summary>Ubuntu</summary>
 
+linux comes with python pre-installed, but your version might be outdated.
+
 ```bash
 sudo apt update
 sudo apt install python3
@@ -101,9 +103,9 @@ The directory structure should look like this:
 
 ```markdown
 .
-├── README.md
+├── REDME.md
 ├── app.py
-├── requirements.txt
+├── gameplay.py
 ├── ...
 └── assets/
    ├── sprite/
@@ -117,19 +119,22 @@ The directory structure should look like this:
 
 ## 🎮 Controls
 
-#### Movement
+#### ⌨️ Movement
 
 - `W` or `↑`  Move up
 - `A` or `←`   Move left
 - `S` or `↓`    Move down
 - `D` or `→`   Move right
 
-#### Shooting
+#### 🔫 Shooting
 
 - `mouse left click` | Shoot
 
 
 ## 🌲 Structure
+
+<details>
+<summary>Quick Class Guide</summary>
 
 ```markdown
 .
@@ -160,13 +165,16 @@ The directory structure should look like this:
   ├── audio/
   └── ...
 ```
+</details>
 
 ## 🐞 Known Issues
 
-The `SimpleGUICS2Pygame` API is a buggy and outdated/unspported repo, causing some issues with the game. The game may not run as expected on some systems.
-These issues are mostly related to the API itself and not the game code.
+- The `SimpleGUICS2Pygame` API is a buggy and outdated/unspported repo, causing some issues with the game. 
+- The game may not run as expected on some systems.
 
-Some of the bugs cannot be patched since our project requirements prohibit us from using other APIs.
+- These issues are mostly related to the API itself and not the game code.
+
+- Some of the bugs cannot be patched since our project requirements prohibit us from using other APIs.
 
 #### ‼️ Audio Device
 
