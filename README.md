@@ -1,7 +1,21 @@
-source code for SimpleGUICS2Pygame-based shooter.
-Fun top-down pixel-art with simple graphics and gameplay.
+<p align="center">
+  <img
+    width="552"
+    src="/assets/logo/title-logo.png"
+    alt="AoF, Top-down shooter game written in Python."
+  />
+</p>
 
----
+
+
+ <p align="center">
+     SimpleGUICS2Pygame-based game written in Python.<br />
+     Fun top-down shooter with simple graphics and gameplay.<br />
+</p>
+
+<p align="center">
+    <sup>Latest version: Beta</sup>
+</p>
 
 ## 🐍 Getting Started
 
@@ -30,9 +44,6 @@ Follow the full instructions.
 sudo apt update
 sudo apt install python3
 ```
-
-````
-
 </details>
 
 <details>
