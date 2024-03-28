@@ -9,7 +9,7 @@
 
 
  <p align="center">
-     SimpleGUICS2Pygame-based game written in Python.<br />
+     `SimpleGUICS2Pygame`-based game written in Python.<br />
      Fun top-down shooter with simple graphics and gameplay.<br />
 </p>
 
@@ -27,14 +27,18 @@
 
 <details>
 <summary>Windows</summary>
+  
 Visit [here](https://www.python.org/downloads/windows/) and download the latest version of Python3.
 Follow the full instructions.
+
 </details>
 
 <details>
 <summary>macOS</summary>
+  
 Visit [here](https://www.python.org/downloads/mac-osx/) and download the latest version of Python3.
 Follow the full instructions.
+
 </details>
 
 <details>
@@ -48,6 +52,7 @@ sudo apt install python3
 
 <details>
 <summary>Others</summary>
+  
 Visit [here](https://www.python.org/downloads/) and download the latest version of Python3.
 Follow the full instructions.
 </details>
@@ -76,7 +81,6 @@ pip install -r requirements.txt
 
 if none of the above solutions works, visit [here](https://pypi.org/project/SimpleGUICS2Pygame/) and follow the instructions for your OS.
 
----
 
 ## 👾 Running the game
 
@@ -107,24 +111,23 @@ The directory structure should look like this:
    └── ...
 ```
 
-**`app.py` is the main file that runs the game.** - has the main game loop -> simplegui API calls - has the main state machine
+**`app.py` is the main file that runs the game.** - has the main game loop -> `simplegui` API calls - has the main state machine
 
----
+
 
 ## 🎮 Controls
 
 #### Movement
 
-- `W` or `↑` | Move up
-- `A` or `←` | Move left
-- `S` or `↓` | Move down
-- `D` or `→` | Move right
+- `W` or `↑`  Move up
+- `A` or `←`   Move left
+- `S` or `↓`    Move down
+- `D` or `→`   Move right
 
 #### Shooting
 
 - `mouse left click` | Shoot
 
----
 
 ## 🌲 Structure
 
@@ -157,11 +160,12 @@ The directory structure should look like this:
   ├── audio/
   └── ...
 ```
----
+
 ## 🐞 Known Issues
 
-The SimpleGUICS2Pygame API is a buggy and outdated/unspported repo, causing some issues with the game. The game may not run as expected on some systems.
+The `SimpleGUICS2Pygame` API is a buggy and outdated/unspported repo, causing some issues with the game. The game may not run as expected on some systems.
 These issues are mostly related to the API itself and not the game code.
+
 Some of the bugs cannot be patched since our project requirements prohibit us from using other APIs.
 
 #### ‼️ Audio Device
@@ -182,13 +186,13 @@ This does **not** mean that the system has to be unmuted; it just needs to have 
 - The scaling system is somewhat random and broken; depending on the system, the game may not scale properly. **Unpatchable**
 - Resizing the game window is not supported. **Unpatchable**
 
----
+
 
 #### Binary Distribution
 
 The `.exe` file will be available soon.
 
----
+
 
 ## 📝 License
 
